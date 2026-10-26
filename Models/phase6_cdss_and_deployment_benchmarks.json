@@ -1,0 +1,33 @@
+{
+  "edge_benchmarks": {
+    "cpu_single_epoch_latency_ms": 3.286927500012098,
+    "gpu_single_epoch_latency_ms": 3.6467645000084303,
+    "gpu_batched_throughput_epochs_per_sec": 68735.6084812184,
+    "hours_of_eeg_per_second": 76.37289831246488,
+    "real_time_acceleration_factor_gpu": 1096.8627121358545,
+    "model_parameters": 574411,
+    "model_size_mb": 2.191204071044922
+  },
+  "case_studies": {
+    "aud_case1": {
+      "subject_id": "ds005907_sub-033",
+      "true_audit": 20.0,
+      "predicted_aud_probability": 0.7710721488397093,
+      "clinical_status": "POSITIVE (HIGH RISK FOR SEVERE AUD)"
+    },
+    "dementia_case2": {
+      "subject_id": "ds004504_sub-001",
+      "true_mmse": 16.0,
+      "predicted_mmse": 19.287288665771484,
+      "prob_cn": 0.0688409631614732,
+      "prob_ad": 0.8532759552875119,
+      "prob_ftd": 0.07788308155101507
+    },
+    "epilepsy_case3": {
+      "subject_id": "chb01",
+      "mean_ictal_risk": 0.7409981149922878,
+      "max_seizure_risk": 0.9708541094990443,
+      "ictal_epochs_detected": 20
+    }
+  }
+}

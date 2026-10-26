@@ -1,0 +1,46 @@
+# Git ignore for UC-EEG-FM Benchmark Suite
+# Raw and large processed datasets (downloadable via download_genuine_datasets.py)
+Raw_Datasets/
+Processed_Features/
+
+# Python cache & compiled objects
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.env
+
+# Jupyter & Editor files
+.ipynb_checkpoints
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS temporary files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store

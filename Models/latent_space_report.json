@@ -1,0 +1,123 @@
+{
+  "training_epochs": 15,
+  "final_val_loss": 2.4488544987063063,
+  "pca_explained_variance_ratio_2d": 0.920258104801178,
+  "silhouette_score": 0.35302096605300903,
+  "davies_bouldin_index": 2.0248192628740815,
+  "total_evaluated_epochs": 49472,
+  "total_evaluated_subjects": 146,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 2.657946187433683,
+      "val_loss": 2.4670330006958485,
+      "val_recon_mse": 0.027345643891491973,
+      "val_contra_loss": 4.879374713608713
+    },
+    {
+      "epoch": 2,
+      "train_loss": 2.5836704133802817,
+      "val_loss": 2.4627028208654,
+      "val_recon_mse": 0.02278359115565892,
+      "val_contra_loss": 4.8798384594194815
+    },
+    {
+      "epoch": 3,
+      "train_loss": 2.581167784597104,
+      "val_loss": 2.4620363229551736,
+      "val_recon_mse": 0.02605489517486833,
+      "val_contra_loss": 4.871962855560611
+    },
+    {
+      "epoch": 4,
+      "train_loss": 2.5796227555256337,
+      "val_loss": 2.4640329183535554,
+      "val_recon_mse": 0.028848968208720436,
+      "val_contra_loss": 4.87036790028967
+    },
+    {
+      "epoch": 5,
+      "train_loss": 2.563556942079837,
+      "val_loss": 2.465341129777671,
+      "val_recon_mse": 0.030555309760713516,
+      "val_contra_loss": 4.869571640033914
+    },
+    {
+      "epoch": 6,
+      "train_loss": 2.5653007103699363,
+      "val_loss": 2.468947498788681,
+      "val_recon_mse": 0.02279535839287094,
+      "val_contra_loss": 4.8923042807916195
+    },
+    {
+      "epoch": 7,
+      "train_loss": 2.5444334089600793,
+      "val_loss": 2.4592351192594366,
+      "val_recon_mse": 0.014765516838359864,
+      "val_contra_loss": 4.888939204842154
+    },
+    {
+      "epoch": 8,
+      "train_loss": 2.532928182562399,
+      "val_loss": 2.4488544987063063,
+      "val_recon_mse": 0.010027598166330294,
+      "val_contra_loss": 4.877653801079952
+    },
+    {
+      "epoch": 9,
+      "train_loss": 2.522886951764425,
+      "val_loss": 2.452070701852055,
+      "val_recon_mse": 0.010234244792214171,
+      "val_contra_loss": 4.883672914119682
+    },
+    {
+      "epoch": 10,
+      "train_loss": 2.547951905755326,
+      "val_loss": 2.457906502553008,
+      "val_recon_mse": 0.009570900727101046,
+      "val_contra_loss": 4.896671203651813
+    },
+    {
+      "epoch": 11,
+      "train_loss": 2.543889236429499,
+      "val_loss": 2.458509705565644,
+      "val_recon_mse": 0.010348852516876327,
+      "val_contra_loss": 4.8963217060975355
+    },
+    {
+      "epoch": 12,
+      "train_loss": 2.5126021198100514,
+      "val_loss": 2.4591176398721704,
+      "val_recon_mse": 0.009261552457264954,
+      "val_contra_loss": 4.89971217482981
+    },
+    {
+      "epoch": 13,
+      "train_loss": 2.509778968627668,
+      "val_loss": 2.458918513761918,
+      "val_recon_mse": 0.009146479733354139,
+      "val_contra_loss": 4.899544068057128
+    },
+    {
+      "epoch": 14,
+      "train_loss": 2.5078780466121517,
+      "val_loss": 2.4588071727958236,
+      "val_recon_mse": 0.010792846025927274,
+      "val_contra_loss": 4.896028653539792
+    },
+    {
+      "epoch": 15,
+      "train_loss": 2.504324146442943,
+      "val_loss": 2.4595207691688272,
+      "val_recon_mse": 0.009269363279489688,
+      "val_contra_loss": 4.900502811778676
+    }
+  ],
+  "diagnoses": {
+    "HealthyControl": 12454,
+    "AlzheimersDisease": 7332,
+    "AlcoholUseDisorder": 6370,
+    "FrontotemporalDementia": 4176,
+    "PediatricEpilepsy": 19140
+  }
+}

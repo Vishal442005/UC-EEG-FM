@@ -1,0 +1,44 @@
+{
+  "title": "Unified Cross-Disorder EEG Foundation Model (UC-EEG-FM): Benchmark Suite, Pretrained Weights, and Clinical Decision Support System",
+  "description": "Official open-source benchmark repository and pre-trained weights for the Unified Cross-Disorder EEG Foundation Model (UC-EEG-FM). Contains standardized clinical datasets (Alcohol Use Disorder, Alzheimer's and Frontotemporal Dementia, Pediatric Epilepsy), Spatial-Temporal Transformer backbone, 64-dimensional unit hypersphere latent manifold embeddings across 49,472 epochs (54.97 hours), strict subject-stratified clinical benchmarking pipelines, few-shot transfer learning curves, gradient-weighted feature attribution saliency, and edge-deployable TorchScript and ONNX models.",
+  "creators": [
+    {
+      "name": "Vishal",
+      "affiliation": "Computational Neuroengineering & Clinical AI Research Team"
+    }
+  ],
+  "access_right": "open",
+  "license": "Apache-2.0",
+  "keywords": [
+    "Electroencephalography",
+    "EEG Foundation Model",
+    "Self-Supervised Learning",
+    "Transformer",
+    "Alcohol Use Disorder",
+    "Alzheimer's Disease",
+    "Frontotemporal Dementia",
+    "Pediatric Epilepsy",
+    "Few-Shot Learning",
+    "Contrastive InfoNCE",
+    "Clinical Decision Support",
+    "Reproducible Neuroscience"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.18112/openneuro.ds005907.v1.0.0",
+      "relation": "cites",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.1016/j.dib.2023.109083",
+      "relation": "cites",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.13026/C2K887",
+      "relation": "cites",
+      "scheme": "doi"
+    }
+  ],
+  "upload_type": "software"
+}
