@@ -1,0 +1,214 @@
+[
+  {
+    "index": 1,
+    "arxiv_id": "2305.10351",
+    "title": "BIOT: Cross-data Biosignal Learning in the Wild",
+    "authors": [
+      "Chaoqi Yang",
+      "M. Brandon Westover",
+      "Jimeng Sun"
+    ],
+    "published": "2023-05-10",
+    "year": 2023,
+    "scope": "Cross-Disorder EEG Foundation Model / Seizure & Abnormality Detection",
+    "local_file": "01_Yang_2023_BIOT_Biosignal_Transformer.pdf",
+    "file_path": "E:\\All EEG\\Literature_Review\\Papers\\01_Yang_2023_BIOT_Biosignal_Transformer.pdf",
+    "size_bytes": 3657941,
+    "size_mb": 3.49,
+    "url": "https://arxiv.org/pdf/2305.10351.pdf",
+    "summary": "Biological signals, such as electroencephalograms (EEG), play a crucial role in numerous clinical applications, exhibiting diverse data formats and quality profiles. Current deep learning models for biosignals are typically specialized for specific datasets and clinical settings, limiting their broader applicability. Motivated by the success of large language models in text processing, we explore the development of foundational models that are trained from multiple data sources and can be fine-tuned on different downstream biosignal tasks.   To overcome the unique challenges associated with biosignals of various formats, such as mismatched channels, variable sample lengths, and prevalent missing values, we propose a Biosignal Transformer (\\method). The proposed \\method model can enable cross-data learning with mismatched channels, variable lengths, and missing values by tokenizing diverse biosignals into unified \"biosignal sentences\". Specifically, we tokenize each channel into fixed-length segments containing local signal features, flattening them to form consistent \"sentences\". Channel embeddings and {\\em relative} position embeddings are added to preserve spatio-temporal features.   The \\method model is versatile and applicable to various biosignal learning settings across different datasets, including joint pre-training for larger models. Comprehensive evaluations on EEG, electrocardiogram (ECG), and human activity sensory signals demonstrate that \\method outperforms robust baselines in common settings and facilitates learning across multiple datasets with different formats. Use CHB-MIT seizure detection task as an example, our vanilla \\method model shows 3\\% improvement over baselines in balanced accuracy, and the pre-trained \\method models (optimized from other data sources) can further bring up to 4\\% improvements."
+  },
+  {
+    "index": 2,
+    "arxiv_id": "2405.18765",
+    "title": "Large Brain Model for Learning Generic Representations with Tremendous EEG Data in BCI",
+    "authors": [
+      "Wei-Bang Jiang",
+      "Li-Ming Zhao",
+      "Bao-Liang Lu"
+    ],
+    "published": "2024-05-29",
+    "year": 2024,
+    "scope": "Large Brain Foundation Model / Multi-Hospital Clinical EEG Classification",
+    "local_file": "02_Jiang_2024_LaBraM_Large_Brain_Model.pdf",
+    "file_path": "E:\\All EEG\\Literature_Review\\Papers\\02_Jiang_2024_LaBraM_Large_Brain_Model.pdf",
+    "size_bytes": 1082275,
+    "size_mb": 1.03,
+    "url": "https://arxiv.org/pdf/2405.18765.pdf",
+    "summary": "The current electroencephalogram (EEG) based deep learning models are typically designed for specific datasets and applications in brain-computer interaction (BCI), limiting the scale of the models and thus diminishing their perceptual capabilities and generalizability. Recently, Large Language Models (LLMs) have achieved unprecedented success in text processing, prompting us to explore the capabilities of Large EEG Models (LEMs). We hope that LEMs can break through the limitations of different task types of EEG datasets, and obtain universal perceptual capabilities of EEG signals through unsupervised pre-training. Then the models can be fine-tuned for different downstream tasks. However, compared to text data, the volume of EEG datasets is generally small and the format varies widely. For example, there can be mismatched numbers of electrodes, unequal length data samples, varied task designs, and low signal-to-noise ratio. To overcome these challenges, we propose a unified foundation model for EEG called Large Brain Model (LaBraM). LaBraM enables cross-dataset learning by segmenting the EEG signals into EEG channel patches. Vector-quantized neural spectrum prediction is used to train a semantically rich neural tokenizer that encodes continuous raw EEG channel patches into compact neural codes. We then pre-train neural Transformers by predicting the original neural codes for the masked EEG channel patches. The LaBraMs were pre-trained on about 2,500 hours of various types of EEG signals from around 20 datasets and validated on multiple different types of downstream tasks. Experiments on abnormal detection, event type classification, emotion recognition, and gait prediction show that our LaBraM outperforms all compared SOTA methods in their respective fields. Our code is available at https://github.com/935963004/LaBraM."
+  },
+  {
+    "index": 3,
+    "arxiv_id": "2101.12037",
+    "title": "BENDR: using transformers and a contrastive self-supervised learning task to learn from massive amounts of EEG data",
+    "authors": [
+      "Demetres Kostas",
+      "Stephane Aroca-Ouellette",
+      "Frank Rudzicz"
+    ],
+    "published": "2021-01-28",
+    "year": 2021,
+    "scope": "Contrastive Self-Supervised EEG Transformer / Multi-Task Decoding",
+    "local_file": "03_Kostas_2021_BENDR_Transformers_Biosignal.pdf",
+    "file_path": "E:\\All EEG\\Literature_Review\\Papers\\03_Kostas_2021_BENDR_Transformers_Biosignal.pdf",
+    "size_bytes": 407793,
+    "size_mb": 0.39,
+    "url": "https://arxiv.org/pdf/2101.12037.pdf",
+    "summary": "Deep neural networks (DNNs) used for brain-computer-interface (BCI) classification are commonly expected to learn general features when trained across a variety of contexts, such that these features could be fine-tuned to specific contexts. While some success is found in such an approach, we suggest that this interpretation is limited and an alternative would better leverage the newly (publicly) available massive EEG datasets. We consider how to adapt techniques and architectures used for language modelling (LM), that appear capable of ingesting awesome amounts of data, towards the development of encephalography modelling (EM) with DNNs in the same vein. We specifically adapt an approach effectively used for automatic speech recognition, which similarly (to LMs) uses a self-supervised training objective to learn compressed representations of raw data signals. After adaptation to EEG, we find that a single pre-trained model is capable of modelling completely novel raw EEG sequences recorded with differing hardware, and different subjects performing different tasks. Furthermore, both the internal representations of this model and the entire architecture can be fine-tuned to a variety of downstream BCI and EEG classification tasks, outperforming prior work in more task-specific (sleep stage classification) self-supervision."
+  },
+  {
+    "index": 4,
+    "arxiv_id": "2311.03764",
+    "title": "Neuro-GPT: Towards A Foundation Model for EEG",
+    "authors": [
+      "Wenhui Cui",
+      "Woojae Jeong",
+      "Philipp Th\u00f6lke",
+      "Takfarinas Medani",
+      "Karim Jerbi",
+      "Anand A. Joshi",
+      "Richard M. Leahy"
+    ],
+    "published": "2023-11-07",
+    "year": 2023,
+    "scope": "Generative Foundation Model for EEG Classification",
+    "local_file": "04_Cui_2023_NeuroGPT_Foundation_Model_EEG.pdf",
+    "file_path": "E:\\All EEG\\Literature_Review\\Papers\\04_Cui_2023_NeuroGPT_Foundation_Model_EEG.pdf",
+    "size_bytes": 642826,
+    "size_mb": 0.61,
+    "url": "https://arxiv.org/pdf/2311.03764.pdf",
+    "summary": "To handle the scarcity and heterogeneity of electroencephalography (EEG) data for Brain-Computer Interface (BCI) tasks, and to harness the power of large publicly available data sets, we propose Neuro-GPT, a foundation model consisting of an EEG encoder and a GPT model. The foundation model is pre-trained on a large-scale data set using a self-supervised task that learns how to reconstruct masked EEG segments. We then fine-tune the model on a Motor Imagery Classification task to validate its performance in a low-data regime (9 subjects). Our experiments demonstrate that applying a foundation model can significantly improve classification performance compared to a model trained from scratch, which provides evidence for the generalizability of the foundation model and its ability to address challenges of data scarcity and heterogeneity in EEG. The code is publicly available at github.com/wenhui0206/NeuroGPT."
+  },
+  {
+    "index": 5,
+    "arxiv_id": "2512.08959",
+    "title": "EEG-Bench: A Benchmark for EEG Foundation Models in Clinical Applications",
+    "authors": [
+      "Ard Kastrati",
+      "Josua B\u00fcrki",
+      "Jonas Lauer",
+      "Cheng Xuan",
+      "Raffaele Iaquinto",
+      "Roger Wattenhofer"
+    ],
+    "published": "2025-11-28",
+    "year": 2025,
+    "scope": "Clinical Benchmarking Suite for EEG Foundation Models",
+    "local_file": "05_Wang_2025_EEGBench_Clinical_Foundation_Models.pdf",
+    "file_path": "E:\\All EEG\\Literature_Review\\Papers\\05_Wang_2025_EEGBench_Clinical_Foundation_Models.pdf",
+    "size_bytes": 910297,
+    "size_mb": 0.87,
+    "url": "https://arxiv.org/pdf/2512.08959.pdf",
+    "summary": "We introduce a unified benchmarking framework focused on evaluating EEG-based foundation models in clinical applications. The benchmark spans 11 well-defined diagnostic tasks across 14 publicly available EEG datasets, including epilepsy, schizophrenia, Parkinson's disease, OCD, and mild traumatic brain injury. It features minimal preprocessing, standardized evaluation protocols, and enables side-by-side comparisons of classical baselines and modern foundation models. Our results show that while foundation models achieve strong performance in certain settings, simpler models often remain competitive, particularly under clinical distribution shifts. To facilitate reproducibility and adoption, we release all prepared data and code in an accessible and extensible format."
+  },
+  {
+    "index": 6,
+    "arxiv_id": "2604.10293",
+    "title": "Impact of Validation Strategy on Machine Learning Performance in EEG-Based Alcoholism Classification",
+    "authors": [
+      "Tahir Cetin Akinci",
+      "Yuksel Celik",
+      "Omer Faruk Ertugrul"
+    ],
+    "published": "2026-04-11",
+    "year": 2026,
+    "scope": "Alcohol Use Disorder Detection / Subject Leakage & Validation Strategies",
+    "local_file": "06_Silva_2026_Validation_Strategy_Alcoholism_EEG.pdf",
+    "file_path": "E:\\All EEG\\Literature_Review\\Papers\\06_Silva_2026_Validation_Strategy_Alcoholism_EEG.pdf",
+    "size_bytes": 841558,
+    "size_mb": 0.8,
+    "url": "https://arxiv.org/pdf/2604.10293.pdf",
+    "summary": "Electroencephalography provides a non-invasive and cost-effective approach for analyzing neural patterns associated with alcohol dependence. However, reported classification performance in EEG-based alcoholism studies varies considerably, often due to differences in validation strategies rather than intrinsic model capability. This study presents a validation-aware machine learning framework to assess the impact of evaluation methodology on classification performance. A balanced multi-channel EEG dataset of 300 trials (150 alcoholic, 150 control) was analyzed using a structured feature representation combining statistical descriptors and spectral band interactions. Five classifiers, including support vector machines (linear and radial basis function kernels), random forest, k-nearest neighbors, and AdaBoost, were evaluated under standard and nested cross-validation protocols. Results show that conventional validation with global hyperparameter tuning introduces optimistic bias. In particular, SVM with radial basis function kernel exhibited a performance decrease of approximately 5\\% under nested cross-validation, indicating overestimation. Ensemble-based methods showed more stable generalization, with AdaBoost achieving the highest performance, reaching 78.3\\% accuracy ($\\pm$4.25), an AUC of 0.868, and balanced sensitivity (78.67\\%) and specificity (81.33\\%). These findings highlight that validation strategy is a primary determinant of perceived model performance. Statistical analysis using McNemar's test further shows that most performance differences between models are not statistically significant, emphasizing careful interpretation of classification results. The proposed framework provides a reproducible and robust basis for evaluating machine learning models in biomedical signal analysis."
+  },
+  {
+    "index": 7,
+    "arxiv_id": "2605.15009",
+    "title": "DeepTokenEEG Enhancing Mild Cognitive Impairment and Alzheimers Classification via Tokenized EEG Features",
+    "authors": [
+      "Thinh Nguyen-Quang",
+      "Minh Long Ngo",
+      "Ngoc-Son Nguyen",
+      "Nguyen Thanh Vinh",
+      "Huy-Dung Han",
+      "Bui Thanh Tung",
+      "Nguyen Quang Linh",
+      "Khuong Vo",
+      "Manoj Vishwanath",
+      "Hung Cao"
+    ],
+    "published": "2026-05-14",
+    "year": 2026,
+    "scope": "Tokenized EEG Features for Alzheimer's & MCI Classification",
+    "local_file": "07_Li_2026_DeepTokenEEG_MCI_Alzheimers_Classification.pdf",
+    "file_path": "E:\\All EEG\\Literature_Review\\Papers\\07_Li_2026_DeepTokenEEG_MCI_Alzheimers_Classification.pdf",
+    "size_bytes": 1684763,
+    "size_mb": 1.61,
+    "url": "https://arxiv.org/pdf/2605.15009.pdf",
+    "summary": "The detection of Alzheimers disease (AD) is considered crucial, as timely intervention can improve patient outcomes. Electroencephalogram (EEG)-based diagnosis has been recognized as a non-invasive, accessible, and cost-effective approach for AD detection; however, it faces challenges related to data availability, accuracy of modern deep learning methods, and the time-consuming nature of expert-based interpretation. In this study, a novel lightweight and high-performance model, DeepTokenEEG, was designed for the diagnosis of AD and the classification of EEG signals from AD patients, individuals with other neurological conditions, and healthy subjects. Unlike traditional heavy-weight models, DeepTokenEEG ultilizes spatial and temporal tokenizer that effectively captures AD-related biomarkers in both temporal and frequency domain with only 0.29 million paramaters. Trained in a combined dataset of 274 subjects, including 180 AD cases, and 94 healthy controls, the proposed method achieves a maximum recorded accuracy of 100% on specific frequency bands, representing an improvement of 1.41-15.35% over state-of-the-art methods on the same dataset. These results indicate the potential of DeepTokenEEG for early detection and screening of AD, with promising applicability for deployment due to its compact size."
+  },
+  {
+    "index": 8,
+    "arxiv_id": "2608.29755",
+    "title": "GraM-Diff: A Unified Graph-Mamba Diffusion Framework for EEG-Based Alzheimer's Disease Data Generation and Diagnosis",
+    "authors": [
+      "M. Tanveer",
+      "Ayush Singh Rana",
+      "Sanskriti Jain",
+      "Arnav Kumar",
+      "Aryaman Tiwari",
+      "A. Rahaman",
+      "A. Quadir",
+      "M. Sajid"
+    ],
+    "published": "2026-08-30",
+    "year": 2026,
+    "scope": "Graph-Mamba Diffusion for EEG-based Alzheimer's Disease Diagnosis",
+    "local_file": "08_GraM_Diff_2026_Alzheimers_Diagnosis.pdf",
+    "file_path": "E:\\All EEG\\Literature_Review\\Papers\\08_GraM_Diff_2026_Alzheimers_Diagnosis.pdf",
+    "size_bytes": 609738,
+    "size_mb": 0.58,
+    "url": "https://arxiv.org/pdf/2608.29755.pdf",
+    "summary": "Electroencephalography (EEG) is a promising, non-invasive, and cost-effective modality for Alzheimer's disease (AD) detection, but deep learning methods are limited by small and imbalanced clinical datasets. Generative augmentation offers a solution, yet existing approaches rely on inefficient class-specific models or fail to capture complex spatial and temporal brain dynamics. To address this, we propose GraM-Diff, a unified classifier-guided Graph-Mamba diffusion framework for EEG synthesis. It embeds Graph Convolutional Networks within a diffusion U-Net to model inter-electrode connectivity and Bidirectional Mamba state-space blocks for linear-complexity long-range temporal modeling. Latent-space classifier guidance lets a single model generate both healthy and pathological EEG within a shared representation, avoiding fragmented per-cohort pipelines. Across four EEG-based AD benchmarks, synthetic augmentation improves classification, yields superior Context-FID and correlation scores over strong generative baselines, and enhances robustness in data-scarce settings."
+  },
+  {
+    "index": 9,
+    "arxiv_id": "2601.06016",
+    "title": "LookAroundNet: Extending Temporal Context with Transformers for Clinically Viable EEG Seizure Detection",
+    "authors": [
+      "\u00de\u00f3r Sverrisson",
+      "Steinn Gu\u00f0mundsson"
+    ],
+    "published": "2026-01-09",
+    "year": 2026,
+    "scope": "Transformers for Clinically Viable Seizure Detection (CHB-MIT / TUH)",
+    "local_file": "09_Ahmed_2026_LookAroundNet_Seizure_Detection.pdf",
+    "file_path": "E:\\All EEG\\Literature_Review\\Papers\\09_Ahmed_2026_LookAroundNet_Seizure_Detection.pdf",
+    "size_bytes": 1481603,
+    "size_mb": 1.41,
+    "url": "https://arxiv.org/pdf/2601.06016.pdf",
+    "summary": "Automated seizure detection from electroencephalography (EEG) remains difficult due to the large variability of seizure dynamics across patients, recording conditions, and clinical settings. We introduce LookAroundNet, a transformer-based seizure detector that uses a wider temporal window of EEG data to model seizure activity. The seizure detector incorporates EEG signals before and after the segment of interest, reflecting how clinicians use surrounding context when interpreting EEG recordings. We evaluate the proposed method on multiple EEG datasets spanning diverse clinical environments, patient populations, and recording modalities, including routine clinical EEG and long-term ambulatory recordings, in order to study performance across varying data distributions. The evaluation includes publicly available datasets as well as a large proprietary collection of home EEG recordings, providing complementary views of controlled clinical data and unconstrained home-monitoring conditions. Our results show that LookAroundNet achieves strong performance across datasets, generalizes well to previously unseen recording conditions, and operates with computational costs compatible with real-world clinical deployment. The results indicate that extended temporal context, increased training data diversity, and model ensembling are key factors for improving performance. This work contributes to moving automatic seizure detection models toward clinically viable solutions."
+  },
+  {
+    "index": 10,
+    "arxiv_id": "2606.02166",
+    "title": "EEG-FuseFormer: A Transformer-Driven Feature Fusion Framework for Seizure Onset Prediction",
+    "authors": [
+      "Vigneshwar Hariharan",
+      "Chithra Reghuvaran",
+      "Arlene John",
+      "Nhat Pham",
+      "Omer Rana",
+      "Deepu John",
+      "Ganesh Neelakanta Iyer"
+    ],
+    "published": "2026-06-01",
+    "year": 2026,
+    "scope": "Spatial-Temporal Transformer Feature Fusion for Seizure Prediction",
+    "local_file": "10_EEGFuseFormer_2026_Seizure_Onset_Prediction.pdf",
+    "file_path": "E:\\All EEG\\Literature_Review\\Papers\\10_EEGFuseFormer_2026_Seizure_Onset_Prediction.pdf",
+    "size_bytes": 920627,
+    "size_mb": 0.88,
+    "url": "https://arxiv.org/pdf/2606.02166.pdf",
+    "summary": "Epilepsy is one of the most common neurological disorders globally, characterized by recurring seizures and significantly impacting the quality of life. Despite advancements in diagnostic techniques, the mitigation of risks faced by epilepsy patients remains challenging due to the unpredictability of seizure events. An accurate forecast of seizure onset helps to reduce risks in epilepsy patients. In this paper, we propose EEG-FuseFormer, a transformer-based feature fusion framework for seizure-onset prediction that combines intermediate features extracted from Convolutional Neural Networks-Long Short-Term Memory (CNN-LSTM) and ResNet-18 networks. The CNN-LSTM architecture captures both spatial and temporal features directly from the raw signal, whereas the ResNet-18 extracts features from the Short-Time Fourier Transform (STFT) representation of the EEG signals. Fusion is carried out using a transformer encoder, and the final prediction is generated using fully connected dense layers. The CHB-MIT dataset was used to validate the proposed model. The results show that the proposed model achieves a mean recall of 98.85% and outperforms most of the state-of-the-art methods. This study evaluates the ability of the proposed feature fusion model to generalize in cross-patient testing scenarios. Fine-tuning pre-trained models on limited target patient data (target adaptation) within the cross-patient validation framework results in higher recall, precision, and F1-score metrics in comparison to the conventional cross-patient validation approach. Finally, the runtime-based computational complexity of the model is assessed across diverse hardware platforms to highlight the performance-complexity trade-off."
+  }
+]
