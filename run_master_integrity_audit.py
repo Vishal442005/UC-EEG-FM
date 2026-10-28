@@ -104,8 +104,8 @@ emb = np.load(os.path.join(MODEL_DIR, "latent_manifold_embeddings.npz"), allow_p
 shape_ok = (emb['embeddings'].shape == (49472, 64))
 log(shape_ok, "Embeddings Tensor", f"Shape: {emb['embeddings'].shape} (Expected (49472, 64))")
 
-# 4. ALL 8 PUBLICATION FIGURES
-for i in range(1, 9):
+# 4. ALL 9 PUBLICATION FIGURES
+for i in range(1, 10):
     pattern = f"Figure_{i}_"
     matches = [f for f in os.listdir(FIG_DIR) if f.startswith(pattern)]
     if matches:
