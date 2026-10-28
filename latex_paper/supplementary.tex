@@ -1,0 +1,99 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{caption}
+\usepackage{setspace}
+
+\linespread{1.2}
+
+\title{\textbf{\Large Supplementary Information:\\A Self-Supervised Cross-Disorder EEG Foundation Model Resolves Diagnostic Collapse and Enables Few-Shot Clinical Transfer}}
+
+\author{\textbf{Vishal \& Senior Research Team in Computational Neuroengineering \& Clinical AI}}
+\affil{Department of Computational Neuroengineering and Biomedical Data Science, Clinical AI Division}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Supplementary Note 1: Comprehensive Demographic Breakdown}
+
+\begin{table}[h]
+\centering
+\small
+\caption{\textbf{Cohort Demographic and Sensor Configuration Breakdown.}}
+\label{tab:supp_cohort}
+\vspace{0.5em}
+\begin{tabularx}{\textwidth}{lccccX}
+\toprule
+\textbf{Cohort} & \textbf{Subjects ($N$)} & \textbf{Age (Mean $\pm$ SD)} & \textbf{Sex (M/F)} & \textbf{Channels} & \textbf{Sampling / Protocol} \\
+\midrule
+OpenNeuro ds005907 (AUD) & 53 (27 AUD, 26 CN) & $27.4 \pm 5.1$ & 31 / 22 & 56/64 & 500 Hz, 3-armed bandit task \\
+OpenNeuro ds004504 (Dementia) & 88 (36 AD, 23 FTD, 29 CN) & $71.8 \pm 7.9$ & 42 / 46 & 19 (10--20) & 500 Hz, eyes-closed resting state \\
+PhysioNet CHB-MIT (Epilepsy) & 5 (\texttt{chb01}--\texttt{chb05}) & $8.6 \pm 4.2$ & 2 / 3 & 23 (bipolar) & 256 Hz, continuous long-term telemetry \\
+\midrule
+\textbf{Total Multi-Disorder Cohort} & \textbf{146 Subjects} & --- & 75 / 71 & --- & \textbf{49,472 Epochs (54.97 Hours)} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section*{Supplementary Note 2: Mathematical Formulations for Spectral Biomarkers}
+
+Each 4.0-second epoch $x(t)$ (1,024 discrete samples at 256 Hz) was evaluated for power spectral density (PSD) using Welch's modified periodogram method with a 1.0-second Hamming window and 50\% overlap:
+\begin{equation}
+P(f) = \frac{1}{K U} \sum_{k=1}^K \left| \sum_{n=0}^{N-1} x_k(n) w(n) e^{-j 2 \pi f n / f_s} \right|^2
+\end{equation}
+where $w(n)$ denotes the Hamming taper, $U = \frac{1}{N} \sum_{n=0}^{N-1} w^2(n)$ is the window normalization constant, and $K$ is the number of sub-segments.
+
+Relative bandpowers were computed across five canonical EEG frequency ranges:
+\begin{itemize}
+    \item Delta ($\delta$): 0.5--4.0 Hz
+    \item Theta ($\theta$): 4.0--8.0 Hz
+    \item Alpha ($\alpha$): 8.0--13.0 Hz
+    \item Beta ($\beta$): 13.0--30.0 Hz
+    \item Gamma ($\gamma$): 30.0--45.0 Hz
+\end{itemize}
+
+Gaussian Differential Entropy (DE) for band-filtered signal $s(t) \sim \mathcal{N}(\mu, \sigma^2)$ is derived as:
+\begin{equation}
+h(S) = -\int_{-\infty}^\infty p(s) \ln p(s) \, ds = \frac{1}{2} \ln(2 \pi e \sigma^2)
+\end{equation}
+
+\section*{Supplementary Note 3: Hyperparameter Optimization Grid}
+
+\begin{table}[h]
+\centering
+\small
+\caption{\textbf{Foundation Model Pre-training and Fine-Tuning Hyperparameters.}}
+\label{tab:hyperparams}
+\vspace{0.5em}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Hyperparameter} & \textbf{Optimal Setting} \\
+\midrule
+Input Dimension & 11 canonical biomarkers \\
+Transformer Layers & 4 encoder layers \\
+Latent Dimension ($d_{\text{model}}$) & 128 \\
+Attention Heads & 4 heads (head dimension = 32) \\
+Feedforward Hidden Dimension ($d_{\text{ff}}$) & 256 \\
+Dropout Rate & 0.10 \\
+Masking Probability ($p_{\text{mask}}$) & 0.15 \\
+Contrastive Projection Dimension & 64 (unit hypersphere, $\|z\|_2 = 1$) \\
+Contrastive Temperature ($\tau$) & 0.10 \\
+Composite Loss Weight & $\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{recon}} + 0.5 \cdot \mathcal{L}_{\text{contrast}}$ \\
+Optimizer & AdamW ($\beta_1 = 0.9, \beta_2 = 0.999$, weight decay = $1 \times 10^{-4}$) \\
+Learning Rate Schedule & Cosine Annealing ($1 \times 10^{-3} \to 1 \times 10^{-5}$) \\
+Batch Size & 256 epochs per mini-batch \\
+Pre-training Epochs & 30 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\end{document}
