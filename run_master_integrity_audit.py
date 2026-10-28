@@ -104,24 +104,32 @@ emb = np.load(os.path.join(MODEL_DIR, "latent_manifold_embeddings.npz"), allow_p
 shape_ok = (emb['embeddings'].shape == (49472, 64))
 log(shape_ok, "Embeddings Tensor", f"Shape: {emb['embeddings'].shape} (Expected (49472, 64))")
 
-# 4. ALL 9 PUBLICATION FIGURES
+# 4. ALL 9 PUBLICATION FIGURES (BOTH PNG AND VECTOR PDF)
+LATEX_FIG_DIR = os.path.join(BASE_DIR, "latex_paper", "figures")
 for i in range(1, 10):
     pattern = f"Figure_{i}_"
-    matches = [f for f in os.listdir(FIG_DIR) if f.startswith(pattern)]
-    if matches:
-        fn = matches[0]
-        fp = os.path.join(FIG_DIR, fn)
-        bp = os.path.join(BRAIN_DIR, fn)
+    png_matches = [f for f in os.listdir(FIG_DIR) if f.startswith(pattern) and f.endswith('.png')]
+    pdf_matches = [f for f in os.listdir(FIG_DIR) if f.startswith(pattern) and f.endswith('.pdf')]
+    if png_matches and pdf_matches:
+        fn_png = png_matches[0]
+        fn_pdf = pdf_matches[0]
+        fp_png = os.path.join(FIG_DIR, fn_png)
+        bp_png = os.path.join(BRAIN_DIR, fn_png)
+        fp_pdf = os.path.join(FIG_DIR, fn_pdf)
+        lp_pdf = os.path.join(LATEX_FIG_DIR, fn_pdf)
         try:
-            im = Image.open(fp)
-            im.verify() # Verify file integrity
-            im = Image.open(fp) # Re-open for dimensions
-            brain_exists = os.path.exists(bp)
-            log(im.size[0] >= 1000 and brain_exists, f"Figure {i}", f"{fn} [{im.size[0]}x{im.size[1]} px, {os.path.getsize(fp)/(1024):.1f} KB] (Brain Mirrored: {brain_exists})")
+            im = Image.open(fp_png)
+            im.verify()
+            im = Image.open(fp_png)
+            brain_exists = os.path.exists(bp_png)
+            pdf_research_ok = os.path.exists(fp_pdf) and os.path.getsize(fp_pdf) > 10000
+            pdf_latex_ok = os.path.exists(lp_pdf) and os.path.getsize(lp_pdf) > 10000
+            all_ok = (im.size[0] >= 1000) and brain_exists and pdf_research_ok and pdf_latex_ok
+            log(all_ok, f"Figure {i} (PNG+PDF)", f"{fn_png} [PNG: {im.size[0]}x{im.size[1]}px, PDF: {os.path.getsize(fp_pdf)/1024:.1f} KB] (Research PDF: {pdf_research_ok}, LaTeX PDF: {pdf_latex_ok})")
         except Exception as e:
-            log(False, f"Figure {i}", f"Corruption in {fn}: {e}")
+            log(False, f"Figure {i}", f"Corruption in {fn_png}: {e}")
     else:
-        log(False, f"Figure {i}", "MISSING!")
+        log(False, f"Figure {i}", f"MISSING (PNG: {len(png_matches)}, PDF: {len(pdf_matches)})")
 
 # 5. REPORTS AND ARTIFACTS IN BRAIN DIRECTORY
 required_artifacts = [

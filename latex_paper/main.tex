@@ -107,14 +107,14 @@ Reconstruction MSE converged smoothly from 0.0521 to 0.0091 on out-of-fold valid
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.72\textwidth]{figures/Figure_1_Training_Convergence.png}
+\includegraphics[width=0.72\textwidth]{figures/Figure_1_Training_Convergence.pdf}
 \caption{\textbf{Self-Supervised Pre-training Convergence of the Cross-Disorder Foundation Model.} Joint minimization of the masked spectral reconstruction MSE ($\mathcal{L}_{\text{recon}}$) and the cross-subject supervised InfoNCE contrastive regularisation ($\mathcal{L}_{\text{contrast}}$) over 30 epochs across 49,472 clinical epochs. Note smooth validation convergence with zero evidence of over-fitting.}
 \label{fig:fig1}
 \end{figure*}
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/Figure_2_Cross_Disorder_Latent_Manifold.png}
+\includegraphics[width=\textwidth]{figures/Figure_2_Cross_Disorder_Latent_Manifold.pdf}
 \caption{\textbf{Continuous Geometry of the Cross-Disorder Latent Manifold (64-Dimensional Unit Hypersphere).} \textbf{a}, Orthogonal 2D projection via Principal Component Analysis (PCA) capturing 92.0\% of cumulative variance across 49,472 epochs. \textbf{b}, Nonlinear t-SNE embedding colored by clinical cohort, demonstrating smooth topological clustering without artificial subject boundary shattering.}
 \label{fig:fig2}
 \end{figure*}
@@ -133,14 +133,14 @@ In continuous severity regression, frozen foundation features predicted clinical
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/Figure_3_Clinical_ROC_Curves.png}
+\includegraphics[width=\textwidth]{figures/Figure_3_Clinical_ROC_Curves.pdf}
 \caption{\textbf{Clinical Receiver Operating Characteristic (ROC) Trajectories Under Strict Subject-Stratified 5-Fold Cross-Validation.} \textbf{a}, Alcohol Use Disorder (AUD vs.\ CN), demonstrating +22.24\% gain over collapsing classical Random Forest. \textbf{b}, Multi-class Dementia Staging (AD vs.\ FTD vs.\ CN), achieving a macro AUROC of 0.8498. \textbf{c}, Pediatric Epilepsy seizure detection on continuous telemetry.}
 \label{fig:fig3}
 \end{figure*}
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.88\textwidth]{figures/Figure_4_Confusion_Matrices.png}
+\includegraphics[width=0.88\textwidth]{figures/Figure_4_Confusion_Matrices.pdf}
 \caption{\textbf{Held-Out Patient Clinical Confusion Matrices.} \textbf{a}, Binary Alcohol Use Disorder classification (balanced accuracy 65.7\%). \textbf{b}, 3-class differential dementia diagnosis across Alzheimer's Disease, Frontotemporal Dementia, and Healthy Controls (Macro F1 = 67.52\%).}
 \label{fig:fig4}
 \end{figure*}
@@ -155,7 +155,7 @@ In \textbf{Alzheimer's Disease} (\textbf{Figure~\ref{fig:fig5}b}), with only 4 t
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.92\textwidth]{figures/Figure_5_Few_Shot_Sample_Efficiency.png}
+\includegraphics[width=0.92\textwidth]{figures/Figure_5_Few_Shot_Sample_Efficiency.pdf}
 \caption{\textbf{Few-Shot Clinical Sample Efficiency and Scaling Curves Across Varying Patient Cohort Sizes ($K$).} \textbf{a}, Alcohol Use Disorder few-shot scaling from $K=2$ to $K=20$ subjects per class. \textbf{b}, Alzheimer's Disease few-shot scaling, showing UC-EEG-FM at $K=2$ patients matching or exceeding classical Random Forest trained on $K=20$ patients.}
 \label{fig:fig5}
 \end{figure*}
@@ -171,7 +171,7 @@ To determine whether UC-EEG-FM constructs an abstract, disease-invariant represe
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.95\textwidth]{figures/Figure_6_Feature_Saliency_and_Neurobiology.png}
+\includegraphics[width=0.95\textwidth]{figures/Figure_6_Feature_Saliency_and_Neurobiology.pdf}
 \caption{\textbf{Mechanistic Input Gradient Saliency and Universal Cross-Disorder Alignment.} \textbf{a}, Gradient-weighted feature attribution across 11 canonical biomarkers. AD is driven by alpha and theta entropy breakdown; AUD is governed by gamma and beta hyperarousal. \textbf{b}, Permutation distribution (1,000 label shuffles) of cosine similarity between disease shift vectors, alongside observed alignment ($r = -0.132$) and zero-shot transfer performance.}
 \label{fig:fig6}
 \end{figure*}
@@ -197,7 +197,7 @@ Channel-resolved biomarker topographies were mapped to the standard internationa
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/Figure_7_Topographical_Scalp_Activation_Maps.png}
+\includegraphics[width=\textwidth]{figures/Figure_7_Topographical_Scalp_Activation_Maps.pdf}
 \caption{\textbf{Scalp Topographical Distribution of Electrophysiological Biomarkers Across Clinical Cohorts.} \textbf{a}, Cortical Slowing Ratio elevation in Alzheimer's localized over temporoparietal sensors. \textbf{b}, Posterior occipital alpha desynchronization in AD. \textbf{c}, Prefrontal beta hyperarousal in AUD. \textbf{d}, Anterior gamma differential entropy expansion in AUD.}
 \label{fig:fig7}
 \end{figure*}
@@ -218,7 +218,7 @@ To evaluate bedside translational feasibility, we developed and profiled a nativ
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.95\textwidth]{figures/Figure_8_Clinical_Decision_Support_System.png}
+\includegraphics[width=0.95\textwidth]{figures/Figure_8_Clinical_Decision_Support_System.pdf}
 \caption{\textbf{Clinical Decision Support System (CDSS) Deployment and Automated Patient Dossiers.} \textbf{a}, Latency and acceleration benchmark comparing 4.0s acquisition time to CPU/GPU execution (1,058$\times$ real-time speedup). \textbf{b}, Patient dossier for severe Alcohol Use Disorder (\texttt{sub-033}). \textbf{c}, Dementia differential staging for an early AD patient (\texttt{sub-001}). \textbf{d}, Real-time paroxysmal seizure telemetry monitoring for pediatric patient \texttt{chb01}.}
 \label{fig:fig8}
 \end{figure*}
@@ -257,7 +257,7 @@ As visualized in \textbf{Figure~\ref{fig:fig9}a}, every classical and domain-spe
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/Figure_9_SOTA_Literature_Benchmark_Sweep.png}
+\includegraphics[width=\textwidth]{figures/Figure_9_SOTA_Literature_Benchmark_Sweep.pdf}
 \caption{\textbf{Comprehensive SOTA Literature Benchmark Sweep (2021--2026).} \textbf{a}, The Subject-Leakage Crisis in AUD classification: random split vs.\ strict patient holdout. \textbf{b}, Alzheimer's generalization across SOTA models. \textbf{c}, Bidirectional zero-shot transfer capability. \textbf{d}, Low-data few-shot efficiency ($K=2$). \textbf{e}, Parameter efficiency and clinical Pareto frontier. \textbf{f}, Single-epoch CPU telemetry latency.}
 \label{fig:fig9}
 \end{figure*}

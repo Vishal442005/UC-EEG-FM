@@ -27,9 +27,13 @@ BASE_DIR = r"E:\All EEG"
 FIG_DIR = os.path.join(BASE_DIR, "Figures")
 MODEL_DIR = os.path.join(BASE_DIR, "Models")
 FEAT_DIR = os.path.join(BASE_DIR, "Processed_Features")
+LATEX_FIG_DIR_E = os.path.join(BASE_DIR, "latex_paper", "figures")
+LATEX_FIG_DIR_LOCAL = r"C:\Users\Visha\Desktop\NewAlcohol\latex_paper\figures"
 BRAIN_DIR = r"C:\Users\Visha\.gemini\antigravity\brain\a487a487-156f-4781-ba99-0b2ec1ba776a"
 
 os.makedirs(FIG_DIR, exist_ok=True)
+os.makedirs(LATEX_FIG_DIR_E, exist_ok=True)
+os.makedirs(LATEX_FIG_DIR_LOCAL, exist_ok=True)
 os.makedirs(BRAIN_DIR, exist_ok=True)
 
 # Global Typography Enforcement
@@ -46,12 +50,28 @@ plt.rcParams['grid.alpha'] = 0.5
 plt.rcParams['grid.linestyle'] = ':'
 
 def save_and_mirror(fig, filename):
-    p1 = os.path.join(FIG_DIR, filename)
-    p2 = os.path.join(BRAIN_DIR, filename)
-    fig.savefig(p1, dpi=300, bbox_inches='tight')
-    fig.savefig(p2, dpi=300, bbox_inches='tight')
+    base_name = os.path.splitext(filename)[0]
+    png_name = f"{base_name}.png"
+    pdf_name = f"{base_name}.pdf"
+    
+    target_dirs = [FIG_DIR, LATEX_FIG_DIR_E, LATEX_FIG_DIR_LOCAL, BRAIN_DIR]
+    
+    # 1. Save High-Res PNG (300 DPI)
+    p_png = os.path.join(FIG_DIR, png_name)
+    fig.savefig(p_png, dpi=300, bbox_inches='tight')
+    
+    # 2. Save Publication Vector PDF (Lossless)
+    p_pdf = os.path.join(FIG_DIR, pdf_name)
+    fig.savefig(p_pdf, format='pdf', bbox_inches='tight')
+    
+    # 3. Mirror both PNG and PDF across all destination folders
+    for d in target_dirs:
+        if d != FIG_DIR:
+            shutil.copy2(p_png, os.path.join(d, png_name))
+            shutil.copy2(p_pdf, os.path.join(d, pdf_name))
+            
     plt.close(fig)
-    print(f"[OPTIMIZED] {filename} saved (300 DPI, verified typography)")
+    print(f"[OPTIMIZED] {png_name} & {pdf_name} saved (300 DPI PNG & Vector PDF)")
 
 # ==============================================================================
 # FIGURE 1: TRAINING CONVERGENCE
