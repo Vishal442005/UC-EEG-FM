@@ -16,7 +16,6 @@
 \usepackage{authblk}
 \usepackage{microtype}
 \usepackage{tabularx}
-\usepackage{lineno}
 \usepackage{hyperref}
 
 \hypersetup{
@@ -28,6 +27,9 @@
 
 % 1.25 line spacing for clean review & publication layout
 \linespread{1.25}
+
+% Disable section numbering (Nature Biomedical Engineering house style)
+\setcounter{secnumdepth}{0}
 
 % Nature-style Caption Formatting
 \captionsetup{
@@ -50,9 +52,6 @@
 
 \maketitle
 
-% Enable line numbers for peer review
-\linenumbers
-
 \begin{abstract}
 \noindent Electroencephalography (EEG) provides millisecond-level temporal resolution of postsynaptic cerebral currents, serving as the primary diagnostic modality for epilepsy and an accessible, non-invasive biomarker for neurodegenerative and substance use disorders. However, clinical translation of machine learning in electrophysiology is hobbled by an epidemic of epoch-level data leakage and single-disease insularity, causing reported classification accuracies ($>95\%$) to collapse toward random chance when encountering unseen brains. Here, the \textbf{Unified Cross-Disorder EEG Foundation Model (UC-EEG-FM)} is presented, a channel-agnostic spatial-temporal transformer pre-trained across 49,472 clinical epochs (54.97 hours) spanning 146 subjects across three major disorder axes: Alcohol Use Disorder (AUD), Alzheimer’s and Frontotemporal Dementia (AD/FTD), and Pediatric Epilepsy. Trained via a dual self-supervised objective combining masked spectral patch reconstruction with cross-subject supervised contrastive regularisation (InfoNCE) on a 64-dimensional unit hypersphere, UC-EEG-FM resolves diagnostic collapse on unseen patients. In strict Subject-Stratified Group 5-Fold Cross-Validation, UC-EEG-FM achieves an AUROC of \textbf{0.8498} (95\% CI: 0.845--0.854, Macro F1: 0.6752) for multi-class dementia staging (+15.24\% gain over classical Random Forest at 0.6974) and \textbf{0.6856} (95\% CI: 0.677--0.695) for AUD detection (+22.24\% gain over classical baselines at 0.4632). In few-shot regimes, frozen linear probes attain an AUROC of \textbf{0.8674 $\pm$ 0.073} in Alzheimer’s with only two patients per class ($K=2$), matching models trained on five-fold larger cohorts. Furthermore, the model demonstrates bidirectional zero-shot transfer from dementia to alcoholism (AUROC \textbf{0.6744}) and alcoholism to dementia (AUROC \textbf{0.8676}), revealing a continuous, shared neurodysfunction manifold. Mechanistic gradient attribution confirms physiological fidelity: Alzheimer's is driven by posterior alpha (29.69\%) and theta (21.89\%) differential entropy collapse reflecting thalamocortical disconnectivity, whereas Alcoholism is dominated by frontal gamma (46.30\%) and beta (21.84\%) differential entropy distortion reflecting cortical GABAergic disinhibition. Finally, the 0.57-million-parameter backbone executes single-epoch inference in \textbf{3.29 ms on CPU} (1,058$\times$ real-time acceleration), enabling instant bedside decision support.
 \end{abstract}
@@ -60,7 +59,7 @@
 \vspace{1em}
 \noindent\textbf{Keywords:} EEG Foundation Model, Cross-Disorder Transfer, Contrastive Learning, Data Leakage, Few-Shot Learning, Clinical Decision Support, Edge Telemetry.
 
-\newpage
+\vspace{1.5em}
 
 \section{Introduction}
 
@@ -117,9 +116,9 @@ All raw recordings were standardized to a 256.0 Hz sampling rate, bandpass filte
 \subsection{Foundation Model Pre-training and Latent Manifold Geometry}
 
 The UC-EEG-FM architecture comprises a 4-layer Transformer Encoder ($d_{\text{model}} = 128$, 4 attention heads, $d_{\text{ff}} = 256$, pre-layer normalization, GELU activations; 574,411 total parameters). The model was pre-trained across 30 epochs on an NVIDIA GeForce RTX 2050 CUDA GPU in 149.5 seconds (\textbf{Fig.~\ref{fig:fig1}}). The dual self-supervised objective balanced masked feature reconstruction loss ($\mathcal{L}_{\text{recon}}$, mean squared error) with cross-subject supervised contrastive InfoNCE regularisation ($\mathcal{L}_{\text{contrast}}$, temperature $\tau = 0.1$):
-\begin{equation}
+\begin{equation*}
 \mathcal{L}_{\text{total}} = \mathcal{L}_{\text{recon}} + 0.5 \cdot \mathcal{L}_{\text{contrast}}
-\end{equation}
+\end{equation*}
 
 The pre-training dynamics of the dual-objective framework are tracked across 30 epochs in \textbf{Fig.~\ref{fig:fig1}}. In \textbf{Fig.~\ref{fig:fig1}a}, the masked spectral reconstruction mean squared error ($\mathcal{L}_{\text{recon}}$) converged smoothly and monotonically from 0.0521 to 0.0091 on out-of-fold validation sets over the 49,472 clinical epochs, establishing that the spatial-temporal transformer learns to accurately infer masked electrophysiological dynamics without loss divergence. Concurrently, the cross-subject supervised InfoNCE contrastive regularisation loss ($\mathcal{L}_{\text{contrast}}$; \textbf{Fig.~\ref{fig:fig1}b}) steadily declined from 3.821 to 1.154, verifying that representations of functionally concordant neural states from distinct individuals are systematically aligned on the unit hypersphere, with close agreement between training and validation trajectories demonstrating the absence of overfitting on held-out subjects.
 
@@ -247,7 +246,7 @@ To evaluate bedside translational feasibility, a native Clinical Decision Suppor
 
 \subsection{Comparative SOTA Literature Benchmark Sweep (2021--2026)}
 
-To position UC-EEG-FM within the rapidly evolving landscape of neural foundation models and clinical decoders, empirical measurements from this study were synthesized with referenced published data across 10 contemporary architectures from 2021 to 2026 (\textbf{Table~\ref{tab:lit_sweep}}, \textbf{Fig.~\ref{fig:fig9}}). 
+To position UC-EEG-FM within the rapidly evolving landscape of neural foundation models and clinical decoders, empirical measurements from this study were synthesized with referenced published data across 10 contemporary architectures from 2021 to 2026 (\textbf{Table~\ref{tab:lit_sweep}}, \textbf{Fig.~\ref{fig:fig9}}, \textbf{Fig.~\ref{fig:fig10}}). 
 
 \textit{Note: Referenced published data from SOTA literature is integrated alongside empirical subject-stratified cross-validation to provide an objective multi-dimensional frontier.}
 
@@ -280,21 +279,28 @@ To position UC-EEG-FM within the rapidly evolving landscape of neural foundation
 \end{minipage}
 \end{table*}
 
-The comprehensive literature benchmark sweep reveals fundamental structural insights across the six panels of \textbf{Fig.~\ref{fig:fig9}}:
+The comprehensive literature benchmark sweep reveals fundamental structural insights across the distributed evaluation panels (\textbf{Fig.~\ref{fig:fig9}} and \textbf{Fig.~\ref{fig:fig10}}):
 \begin{enumerate}
     \item \textbf{Subject-Leakage Crisis in AUD (Fig.~\ref{fig:fig9}a):} Across every evaluated baseline and literature model, random epoch splitting yields deceptively high AUROC values (.8800-0.9810$), but performance undergoes catastrophic collapse under strict patient-stratified holdout. Classical models collapse below random chance (0.4632 for Random Forest; 0.4617 for SVM), while specialist deep models peak at 0.5980 (STEM). UC-EEG-FM achieves the highest patient-stratified AUROC (0.6856), confirming that cross-subject contrastive regularisation successfully neutralizes patient-specific stationary biometrics. This corroborates the critical meta-analysis of Kuruppu et al.\ (2026)~\cite{kuruppu2026}, who identified improper cross-validation as the foremost obstacle to clinical translation.
     \item \textbf{Alzheimer's Disease Generalization (Fig.~\ref{fig:fig9}b):} In dementia classification on held-out patients, UC-EEG-FM achieves an AUROC of 0.8932, outperforming DeepTokenEEG (0.8710), STEM (0.8420), LaBraM (0.8350), and classical baselines (0.7636).
     \item \textbf{Bidirectional Zero-Shot Transfer (Fig.~\ref{fig:fig9}c):} When evaluated across disorder boundaries without task-specific fine-tuning, domain-specialist models (DeepTokenEEG, EEG-FuseFormer) and classical classifiers drop to near-chance levels (AUROC 0.5080--0.5420), whereas UC-EEG-FM attains an out-of-domain AUROC of 0.8676, substantiating the existence of a universal neurodysfunction manifold.
     \item \textbf{Few-Shot Learning Efficiency (Fig.~\ref{fig:fig9}d):} In the extreme low-data regime (=2$ subjects per class), UC-EEG-FM delivers an AUROC of 0.8674, substantially exceeding STEM (0.7950), LaBraM (0.7820), DeepTokenEEG (0.7620), and Random Forest (0.6484).
-    \item \textbf{Pareto Efficiency Frontier (Fig.~\ref{fig:fig9}e):} Mapping diagnostic AUROC against parameter footprint demonstrates that UC-EEG-FM (0.57M parameters) occupies the optimal Pareto frontier, matching or outperforming foundation models requiring 18$\times$ to 39$\times$ more parameters (BIOT at 10.2M, LaBraM at 22.4M).
-    \item \textbf{Bedside CPU Latency (Fig.~\ref{fig:fig9}f):} Single-epoch CPU execution time underscores clinical deployability: while multi-million parameter foundation models require 68.20 ms (BIOT) to 142.50 ms (LaBraM), UC-EEG-FM executes in 3.29 ms, enabling continuous bedside decision support without requiring dedicated GPU infrastructure.
+    \item \textbf{Pareto Efficiency Frontier (Fig.~\ref{fig:fig10}a):} Mapping diagnostic AUROC against parameter footprint demonstrates that UC-EEG-FM (0.57M parameters) occupies the optimal Pareto frontier, matching or outperforming foundation models requiring 18$\times$ to 39$\times$ more parameters (BIOT at 10.2M, LaBraM at 22.4M).
+    \item \textbf{Bedside CPU Latency (Fig.~\ref{fig:fig10}b):} Single-epoch CPU execution time underscores clinical deployability: while multi-million parameter foundation models require 68.20 ms (BIOT) to 142.50 ms (LaBraM), UC-EEG-FM executes in 3.29 ms, enabling continuous bedside decision support without requiring dedicated GPU infrastructure.
 \end{enumerate}
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{figures/Figure_9_SOTA_Literature_Benchmark_Sweep.pdf}
-\caption{\textbf{Comparative benchmark sweep against state-of-the-art literature models (2021--2026).} \textbf{a}, Subject-leakage crisis. \textbf{b}, Alzheimer\'s generalization. \textbf{c}, Zero-shot transfer. \textbf{d}, Few-shot efficiency. \textbf{e}, Parameter efficiency. \textbf{f}, CPU latency.}
+\includegraphics[width=\textwidth]{figures/Figure_9_Clinical_Benchmark_Generalization.pdf}
+\caption{\textbf{Cross-disorder clinical generalization and zero-shot literature benchmark sweep.} \textbf{a}, Subject-leakage crisis in AUD (random split vs.\ patient holdout). \textbf{b}, Dementia generalization across SOTA architectures. \textbf{c}, Bidirectional zero-shot cross-disorder transfer. \textbf{d}, Few-shot sample efficiency in low-data regimes (=2$).}
 \label{fig:fig9}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/Figure_10_Pareto_Frontier_and_Edge_Latency.pdf}
+\caption{\textbf{Parameter efficiency Pareto frontier and real-time bedside telemetry latency.} \textbf{a}, Clinical performance index plotted against model parameters on a logarithmic scale, highlighting the optimal Pareto frontier occupied by UC-EEG-FM. \textbf{b}, Single-epoch CPU latency benchmark on a logarithmic scale relative to the 4,000 ms real-time window and 5.0 ms edge target.}
+\label{fig:fig10}
 \end{figure*}
 
 \section{Discussion}
@@ -319,13 +325,13 @@ Clinical EEG datasets were streamed from official public cloud archives with cry
 
 \subsection{Signal Standardization and Feature Engineering}
 Pre-processing was executed using MNE-Python (v1.12.1). Continuous signals were resampled to 256.0 Hz using polyphase FIR filtering. Zero-phase bandpass filtering was applied between 0.5 Hz and 45.0 Hz using a Hamming-windowed FIR filter (\texttt{firwin}, passband ripple 0.0194, stopband attenuation 53 dB). Notch filters at 50 Hz and 60 Hz removed line noise. Common Average Referencing (CAR) was applied across available channels. Signals were segmented into 4.0-second non-overlapping epochs (1,024 samples). For each epoch $e \in \mathbb{R}^{C \times T}$, Welch's power spectral density (PSD; 1.0 s Hamming window, 50\% overlap) was computed. Relative bandpower was calculated across five standard frequency bands: $\delta$ (0.5--4 Hz), $\theta$ (4--8 Hz), $\alpha$ (8--13 Hz), $\beta$ (13--30 Hz), and $\gamma$ (30--45 Hz). Gaussian Differential Entropy (DE) was computed as:
-\begin{equation}
+\begin{equation*}
 \text{DE} = \frac{1}{2} \ln(2 \pi e \, \sigma^2)
-\end{equation}
+\end{equation*}
 where $\sigma^2$ is the band-filtered signal variance. The Spectral Slowing Ratio was calculated as:
-\begin{equation}
+\begin{equation*}
 \text{SSR} = \frac{\text{PSD}_\delta + \text{PSD}_\theta}{\text{PSD}_\alpha + \text{PSD}_\beta}
-\end{equation}
+\end{equation*}
 Biomarkers were averaged across channels, yielding an 11-dimensional feature vector per epoch, stored in compressed HDF5 format (\texttt{gzip} level 4).
 
 \subsection{Foundation Model Architecture and Pre-training Formulation}
@@ -339,13 +345,13 @@ The UC-EEG-FM network consists of:
 \end{enumerate}
 
 Pre-training minimized the composite loss:
-\begin{equation}
+\begin{equation*}
 \mathcal{L}_{\text{total}} = \mathcal{L}_{\text{recon}} + 0.5 \cdot \mathcal{L}_{\text{contrast}}
-\end{equation}
+\end{equation*}
 where $\mathcal{L}_{\text{contrast}}$ is the supervised InfoNCE loss:
-\begin{equation}
+\begin{equation*}
 \mathcal{L}_{\text{contrast}} = -\sum_{i} \frac{1}{|P(i)|} \sum_{p \in P(i)} \log \frac{\exp(z_i \cdot z_p / \tau)}{\sum_{a \in A(i)} \exp(z_i \cdot z_a / \tau)}
-\end{equation}
+\end{equation*}
 with temperature $\tau = 0.1$, positive set $P(i)$ comprising epochs from other subjects sharing the same diagnostic condition, and anchor set $A(i)$. Pre-training was optimized using AdamW (learning rate $1\times 10^{-3}$, cosine annealing to $1\times 10^{-5}$, weight decay $1\times 10^{-4}$) for 30 epochs with batch size 256 on an NVIDIA GeForce RTX 2050 GPU.
 
 \subsection{Subject-Stratified Validation and Statistical Testing}
@@ -353,9 +359,9 @@ Downstream classification was evaluated using \texttt{GroupKFold(n\_splits=5)} p
 
 \subsection{Mechanistic Saliency and Topographical Brain Mapping}
 Feature saliency was calculated by computing the Frobenius norm of the input gradient:
-\begin{equation}
+\begin{equation*}
 S_k = \left\| \frac{\partial \hat{y}}{\partial x_k} \right\|_F
-\end{equation}
+\end{equation*}
 normalized to sum to 100\%. Topographical scalp maps were rendered by projecting channel-resolved bandpowers and differential entropies onto standard 10--20 electrode coordinates using spherical spline interpolation via MNE-Python.
 
 \subsection{Edge Optimization and Deployment}

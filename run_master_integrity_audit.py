@@ -104,9 +104,9 @@ emb = np.load(os.path.join(MODEL_DIR, "latent_manifold_embeddings.npz"), allow_p
 shape_ok = (emb['embeddings'].shape == (49472, 64))
 log(shape_ok, "Embeddings Tensor", f"Shape: {emb['embeddings'].shape} (Expected (49472, 64))")
 
-# 4. ALL 9 PUBLICATION FIGURES (BOTH PNG AND VECTOR PDF)
+# 4. ALL 10 PUBLICATION FIGURES (BOTH PNG AND VECTOR PDF, INCLUDING SET 1 & SET 2)
 LATEX_FIG_DIR = os.path.join(BASE_DIR, "latex_paper", "figures")
-for i in range(1, 10):
+for i in range(1, 11):
     pattern = f"Figure_{i}_"
     png_matches = [f for f in os.listdir(FIG_DIR) if f.startswith(pattern) and f.endswith('.png')]
     pdf_matches = [f for f in os.listdir(FIG_DIR) if f.startswith(pattern) and f.endswith('.pdf')]
