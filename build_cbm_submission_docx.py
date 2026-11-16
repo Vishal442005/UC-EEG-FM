@@ -144,6 +144,43 @@ def add_p_content(p, text, base_size_pt=11, base_color=(30, 30, 30)):
                 r = p.add_run(tok)
                 format_run(r, font_name="Times New Roman", size_pt=base_size_pt, color_rgb=base_color)
 
+def insert_template_equation(doc, eq_index):
+    """
+    Inserts authentic native Word OMML equation directly from template_equations.docx.
+    Falls back to add_display_equation if template is unavailable.
+    """
+    tpl_paths = [
+        r"E:\All EEG\template_equations.docx",
+        r"C:\Users\Visha\.gemini\antigravity\brain\a487a487-156f-4781-ba99-0b2ec1ba776a\.user_uploaded\media_1794813514514_e05b6cf9.docx"
+    ]
+    tpl_doc = None
+    for p in tpl_paths:
+        if os.path.exists(p):
+            try:
+                tpl_doc = docx.Document(p)
+                break
+            except Exception:
+                continue
+    if tpl_doc is not None and len(tpl_doc.paragraphs) >= (4 + eq_index):
+        p_orig = tpl_doc.paragraphs[4 + eq_index]
+        p_elm = parse_xml(p_orig._p.xml)
+        p_placeholder = doc.add_paragraph()
+        p_placeholder._p.getparent().replace(p_placeholder._p, p_elm)
+    else:
+        eq_fallbacks = {
+            1: (r"x_c^{\text{CAR}}(t) = x_c(t) - \frac{1}{C} \sum_{j=1}^C x_j(t)", "1"),
+            2: (r"P_b = \frac{\int_{f \in \text{band}_b} \text{PSD}(f)\,df}{\int_{0.5}^{45.0} \text{PSD}(f)\,df}, \quad b \in \{\delta, \theta, \alpha, \beta, \gamma\}", "2"),
+            3: (r"\text{TAR} = \frac{P_\theta}{P_\alpha}, \quad \text{TBR} = \frac{P_\theta}{P_\beta}, \quad \text{ABR} = \frac{P_\alpha}{P_\beta}", "3"),
+            4: (r"H_{\text{spec}} = -\sum_{k} p_k \log_2 p_k, \quad H_{\text{diff}} = \frac{1}{2} \ln(2\pi e \sigma_c^2)", "4"),
+            5: (r"H_0 = \text{LayerNorm}\left(\text{GELU}(X_i W_{\text{in}} + \mathbf{1} b_{\text{in}}^T)\right) + \text{PE} \in \mathbb{R}^{L_{\text{tok}} \times 128}", "5"),
+            6: (r"z_i = \frac{g(h_L)}{\|g(h_L)\|_2} \in \mathbb{S}^{63}", "6"),
+            7: (r"\mathcal{L}_{\text{recon}} = \frac{1}{|\mathcal{M}|} \sum_{m \in \mathcal{M}} (x_{i,m} - \hat{x}_{i,m})^2", "7"),
+            8: (r"\mathcal{L}_{\text{contrast}} = \sum_{i \in I} \frac{-1}{|\mathcal{P}(i)|} \sum_{p \in \mathcal{P}(i)} \log \frac{\exp(z_i \cdot z_p / \tau)}{\sum_{a \in \mathcal{A}(i)} \exp(z_i \cdot z_a / \tau)}", "8"),
+            9: (r"\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{recon}} + \lambda \mathcal{L}_{\text{contrast}}", "9")
+        }
+        latex_str, eq_num_str = eq_fallbacks[eq_index]
+        add_display_equation(doc, latex_str, eq_num_str)
+
 def add_display_equation(doc, latex_str, eq_num_str):
     """
     Inserts a native Word OMML equation centered with a right-aligned equation number.
@@ -242,7 +279,7 @@ def build_manuscript_docx():
     p_title.paragraph_format.space_before = Pt(0)
     p_title.paragraph_format.space_after = Pt(12)
     p_title.paragraph_format.line_spacing = 1.15
-    r_title = p_title.add_run("Unified Cross-Disorder Foundation Model for Clinical EEG:\nResolving Subject Data Leakage and Enabling Few-Shot Transfer")
+    r_title = p_title.add_run("Unified Cross-Disorder Foundation Model for Clinical EEG: \nResolving Subject Data Leakage and Enabling Few-Shot Transfer")
     format_run(r_title, size_pt=16, bold=True, color_rgb=(10, 25, 47))
 
     # VERIFIED AUTHOR LINE (FIXES R1 - REAL VERIFIED ACADEMIC IDENTITY)
@@ -300,7 +337,7 @@ def build_manuscript_docx():
     p_kw.paragraph_format.space_after = Pt(14)
     r_kwhd = p_kw.add_run("Keywords: ")
     format_run(r_kwhd, size_pt=10, bold=True, color_rgb=(15, 23, 42))
-    r_kw = p_kw.add_run("Electroencephalography (EEG); Foundation model; Self-supervised learning; Data leakage; Cross-disorder transfer; Clinical decision support; Deep learning; Computers in Biology and Medicine.")
+    r_kw = p_kw.add_run("Electroencephalography (EEG); Foundation model; Self-supervised learning; Subject data leakage; Cross-disorder transfer; Clinical decision support; Edge inference.")
     format_run(r_kw, size_pt=10, italic=True, color_rgb=(40, 40, 40))
 
     p_hr2 = doc.add_paragraph()
@@ -462,7 +499,8 @@ def build_manuscript_docx():
     add_num("3.", "Spatial Re-referencing:", "To establish channel-montage invariance across 19, 23, and 64-channel acquisitions, all scalp signals were re-referenced to Common Average Reference (CAR):")
     
     # NATIVE WORD EQUATION (1)
-    add_display_equation(doc, r"x_c^{\text{CAR}}(t) = x_c(t) - \frac{1}{C} \sum_{j=1}^C x_j(t)", "1")
+    # NATIVE WORD EQUATION (1)
+    insert_template_equation(doc, 1)
 
     add_num("4.", "Temporal Epoching:", "Continuous CAR-referenced recordings were segmented into non-overlapping epochs of $T = 4.0\\text{ seconds}$ ($N_{\\text{samples}} = 1,024\\text{ points}$). Epochs with peak-to-peak amplitudes exceeding $\\pm 200\\ \\mu\\text{V}$ were flagged and rejected as gross ocular, myogenic, or mechanical movement artifacts.")
 
@@ -471,13 +509,16 @@ def build_manuscript_docx():
     add_num("1.", "Relative Band Power ($P_b$, 5 dimensions):", "Calculated across canonical clinical bands: $\\delta$ (0.5–4 Hz), $\\theta$ (4–8 Hz), $\\alpha$ (8–13 Hz), $\\beta$ (13–30 Hz), and $\\gamma$ (30–45 Hz), normalized by total spectral power (0.5–45 Hz):")
 
     # NATIVE WORD EQUATION (2)
-    add_display_equation(doc, r"P_b = \frac{\int_{f \in \text{band}_b} \text{PSD}(f)\,df}{\int_{0.5}^{45.0} \text{PSD}(f)\,df}, \quad b \in \{\delta, \theta, \alpha, \beta, \gamma\}", "2")
+    # NATIVE WORD EQUATION (2)
+    insert_template_equation(doc, 2)
 
     add_num("2.", "Spectral Power Ratios (3 dimensions):", "Derived to quantify established clinical biomarkers of cognitive decline and cortical slowing:")
-    add_display_equation(doc, r"\text{TAR} = \frac{P_\theta}{P_\alpha}, \quad \text{TBR} = \frac{P_\theta}{P_\beta}, \quad \text{ABR} = \frac{P_\alpha}{P_\beta}", "3")
+    # NATIVE WORD EQUATION (3)
+    insert_template_equation(doc, 3)
 
     add_num("3.", "Non-Linear Complexity & Entropy Descriptors (3 dimensions):", "Quantifying signal regularity and information richness: Spectral Entropy ($H_{\\text{spec}}$), Differential Entropy ($H_{\\text{diff}}$ under Gaussian assumption, where $\\sigma_c^2$ denotes band-filtered signal variance), and Spectral Edge Frequency 95% ($\\text{SEF}_{95}$):")
-    add_display_equation(doc, r"H_{\text{spec}} = -\sum_{k} p_k \log_2 p_k, \quad H_{\text{diff}} = \frac{1}{2} \ln(2\pi e \sigma_c^2)", "4")
+    # NATIVE WORD EQUATION (4)
+    insert_template_equation(doc, 4)
 
     # ARCHITECTURAL DESIGN (FIXES R3 - L=11 BIOMARKER TOKEN SEQUENCE ATTENTION)
     add_h2("3.4 UC-EEG-FM Architectural Design (Tokenized Biomarker Sequence Attention)")
@@ -485,7 +526,7 @@ def build_manuscript_docx():
     add_num("1.", "Token & Feature Linear Projection:", "Each biomarker token $m \\in \\{1, ..., L_{\\text{tok}}\\}$ is projected into a $d_{\\text{model}} = 128$ dimensional latent embedding space with learnable token-type and sinusoidal positional embeddings $PE \\in \\mathbb{R}^{L_{\\text{tok}} \\times 128}$:")
 
     # NATIVE WORD EQUATION (5)
-    add_display_equation(doc, r"H_0 = \text{LayerNorm}\left(\text{GELU}(X_i W_{\text{in}} + \mathbf{1} b_{\text{in}}^T) + PE\right) \in \mathbb{R}^{L_{\text{tok}} \times 128}", "5")
+    insert_template_equation(doc, 5)
     add_p("followed by dropout ($p = 0.10$).")
 
     add_num("2.", "Transformer Encoder Backbone:", "A 4-layer Transformer Encoder processes the token sequence $H_0$. Each encoder layer comprises a multi-head self-attention (MHSA) module with $h = 4$ attention heads (head dimension $d_k = 32$), followed by a position-wise two-layer feedforward network (FFN, $128 \\rightarrow 256 \\rightarrow 128$), pre-layer normalization (norm_first = True), and GELU activations. Mean-pooling across the $L_{\\text{tok}}$ output tokens yields the pooled epoch representation $h_L \\in \\mathbb{R}^{128}$. Across the 4 encoder layers and projection heads, the total parameter count is 574,411 (0.57M parameters).")
@@ -493,7 +534,7 @@ def build_manuscript_docx():
     add_num("4.", "Contrastive Projection Head:", "A two-layer MLP ($128 \\rightarrow 128 \\rightarrow 64$) maps $h_L$ onto the 64-dimensional unit hypersphere:")
 
     # NATIVE WORD EQUATION (6)
-    add_display_equation(doc, r"z_i = \frac{g(h_L)}{\|g(h_L)\|_2} \in \mathcal{S}^{63}", "6")
+    insert_template_equation(doc, 6)
     add_p("where $g(\\cdot)$ denotes the projection MLP and $\|z_i\|_2 = 1$.")
 
     # PRE-TRAINING FORMULATION (FIXES R2 - FOLD-ISOLATED HYBRID PRE-TRAINING)
@@ -506,25 +547,25 @@ def build_manuscript_docx():
     add_num("1.", "Masked Biomarker Reconstruction Loss ($\\mathcal{L}_{\\text{recon}}$):", "During each pre-training iteration, a subset of input biomarker dimensions $\\mathcal{M} \\subset \\{1, ..., 11\\}$ is randomly masked with probability $p_{\\text{mask}} = 0.15$ by replacing them with a learnable mask token. The reconstruction loss is formulated as mean squared error (MSE):")
 
     # NATIVE WORD EQUATION (7)
-    add_display_equation(doc, r"\mathcal{L}_{\text{recon}} = \frac{1}{|\mathcal{M}|} \sum_{m \in \mathcal{M}} (x_{i,m} - \hat{x}_{i,m})^2", "7")
+    insert_template_equation(doc, 7)
 
     add_num("2.", "Cross-Subject Supervised Contrastive Regularisation ($\\mathcal{L}_{\\text{contrast}}$):", "To eliminate subject-specific biometric fingerprints while enforcing disease-specific clustering [22], an InfoNCE contrastive loss is applied across subjects. For an anchor epoch $i$ from subject $S(i)$ with diagnostic label $y_i$, positive samples $\\mathcal{P}(i)$ are defined strictly as epochs from different subjects ($S(p) \\neq S(i)$) sharing the same clinical condition ($y_p = y_i$):")
 
     # NATIVE WORD EQUATION (8)
-    add_display_equation(doc, r"\mathcal{L}_{\text{contrast}} = \sum_{i \in I} \frac{-1}{|\mathcal{P}(i)|} \sum_{p \in \mathcal{P}(i)} \log \frac{\exp(z_i \cdot z_p / \tau)}{\sum_{a \in \mathcal{A}(i)} \exp(z_i \cdot z_a / \tau)}", "8")
+    insert_template_equation(doc, 8)
     add_p("where $\\mathcal{A}(i) = I \\setminus \\{i\\}$ denotes all other batch samples, and $\\tau = 0.07$ is the temperature parameter.")
 
     add_num("3.", "Total Optimization Objective:", "The composite loss combines reconstruction and contrastive objectives with a balancing hyperparameter $\\lambda = 0.10$:")
 
     # NATIVE WORD EQUATION (9)
-    add_display_equation(doc, r"\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{recon}} + \lambda \mathcal{L}_{\text{contrast}}", "9")
+    insert_template_equation(doc, 9)
     add_p("Pre-training optimization utilized AdamW (learning rate $\\eta = 1 \\times 10^{-4}$, weight decay $1 \\times 10^{-2}$) with cosine annealing schedule across 15 macro-epochs (effective batch size $B = 64$).")
 
     add_h2("3.6 Downstream Clinical Adaptation and Transfer Protocols")
     add_p("Downstream diagnostic and severity evaluation was performed under two rigorous evaluation protocols without end-to-end backpropagation through the backbone: (1) Frozen Linear Probing, wherein a single linear classification layer ($128 \\rightarrow C$) was trained via cross-entropy loss to evaluate linear separability of foundation features, and (2) Ridge Regression Probing ($128 \\rightarrow 1$) for continuous MMSE and AUDIT symptom severity scores.")
 
     add_h2("3.7 Strict Subject-Stratified Cross-Validation and Statistical Analysis")
-    add_p("To prevent data leakage, all evaluations implemented Subject-Stratified Group 5-Fold Cross-Validation (`GroupKFold` in scikit-learn). All epochs belonging to any given clinical participant were strictly sequestered into either the training partition (80%) or the held-out evaluation partition (20%), ensuring that no patient contributed data to both splits simultaneously. Diagnostic discrimination was quantified by Area Under the Receiver Operating Characteristic curve (AUROC), balanced accuracy, sensitivity, specificity, and Macro F1 score. Statistical significance was verified via two-tailed Wilcoxon signed-rank tests across validation folds (significance threshold $\\alpha = 0.05$). Uncertainty was characterized by 95% Confidence Intervals (CI) derived via 300-iteration bootstrap resampling.")
+    add_p("To prevent data leakage, all evaluations implemented Subject-Stratified Group 5-Fold Cross-Validation (`GroupKFold` in scikit-learn). All epochs belonging to any given clinical participant were strictly sequestered into either the training partition (80%) or the held-out evaluation partition (20%), ensuring that no patient contributed data to both splits simultaneously. For the 5-subject PhysioNet CHB-MIT cohort (chb01–chb05), 5-fold GroupKFold partitioning reduces identically to strict Leave-One-Subject-Out (LOSO) cross-validation across all five pediatric patients. Diagnostic discrimination was quantified by Area Under the Receiver Operating Characteristic curve (AUROC), balanced accuracy, sensitivity, specificity, and Macro F1 score. Statistical significance was verified via two-tailed Wilcoxon signed-rank tests across validation folds (significance threshold $\\alpha = 0.05$). Uncertainty was characterized by 95% Confidence Intervals (CI) derived via 300-iteration bootstrap resampling.")
 
     # -------------------------------------------------------------------------
     # SECTION 4: EXPERIMENTAL RESULTS AND ANALYSIS
@@ -588,7 +629,7 @@ def build_manuscript_docx():
     add_figure_image(doc, "Figure_2_Cross_Disorder_Latent_Manifold.png", "Fig. 2.", "Cross-disorder latent manifold geometry of 49,472 clinical epochs. Panel a presents orthogonal two-dimensional Principal Component Analysis (PCA) capturing 92.03% cumulative variance; Panel b shows nonlinear t-SNE embedding organized by clinical diagnostic cohort.", width_in=6.4)
 
     # ROC Curves & Figure 3
-    add_p("Receiver Operating Characteristic curves under strict subject-stratified Group 5-fold cross-validation are presented in Fig. 3. In binary Alcohol Use Disorder detection (Fig. 3a), UC-EEG-FM achieved an AUROC of 0.6856 (95% CI: 0.677–0.695), significantly outperforming classical Random Forest (0.4632) and SVM (0.4617), demonstrating robust resistance to subject data leakage. In three-class dementia staging (Fig. 3b), the foundation model achieved a Macro AUROC of 0.8498 (95% CI: 0.845–0.854), with individual one-vs-rest AUROCs of 0.8932 for Alzheimer's Disease, 0.7781 for Frontotemporal Dementia, and 0.8781 for Cognitively Normal elderly controls. In pediatric epilepsy monitoring (Fig. 3c), the model attained an AUROC of 0.7061 (95% CI: 0.650–0.766) under extreme class imbalance (96 ictal vs. 19,044 interictal epochs).")
+    add_p("Receiver Operating Characteristic curves under strict subject-stratified Group 5-fold cross-validation are presented in Fig. 3. In binary Alcohol Use Disorder detection (Fig. 3a), UC-EEG-FM achieved an AUROC of 0.6856 (95% CI: 0.677–0.695), significantly outperforming classical Random Forest (0.4632) and SVM (0.4617), demonstrating robust resistance to subject data leakage. In three-class dementia staging (Fig. 3b), the foundation model achieved a Macro AUROC of 0.8498 (95% CI: 0.845–0.854), with individual one-vs-rest AUROCs of 0.8932 for Alzheimer's Disease, 0.8446 (0.845) for Cognitively Normal elderly controls, and 0.8116 (0.812) for Frontotemporal Dementia (mean = 0.8498, matching the plotted ROC curves in Fig. 3b). In pediatric epilepsy monitoring (Fig. 3c), the model attained an AUROC of 0.7061 (95% CI: 0.650–0.766) under extreme class imbalance (96 ictal vs. 19,044 interictal epochs).")
     add_figure_image(doc, "Figure_3_Clinical_ROC_Curves.png", "Fig. 3.", "Clinical Receiver Operating Characteristic curves under strict Subject-Stratified Group 5-fold Cross-Validation. Panels display binary Alcohol Use Disorder detection (a), three-class dementia staging (b), and pediatric epilepsy monitoring (c), with 95% bootstrap confidence bands.", width_in=6.4)
 
     # PARAGRAPH 5 MATCHING FIGURE 4 EXACT CONFUSION MATRIX COUNTS (FIXES R4)
@@ -600,34 +641,32 @@ def build_manuscript_docx():
 
     # 4.2 Few-Shot Sample Efficiency
     add_h2("4.2 Few-Shot Sample Efficiency in Low-Data Clinical Regimes")
-    add_p("A primary clinical motivation for foundation models is rapid adaptation to rare diseases with minimal annotated patient data. We evaluated few-shot adaptation by varying the number of labeled clinical subjects per class ($K \\in \\{1, 2, 3, 5, 10, 20\\}$) available for linear probe training, while evaluating on fully held-out test subjects (Fig. 5).")
-    add_p("In Alzheimer's disease diagnosis (Fig. 5a), UC-EEG-FM achieved an AUROC of 0.8674 \u00b1 0.073 with only two patients per class ($K = 2$), closely matching the full-cohort performance of classical baselines trained on the entire dataset (0.7636 with $N=88$). At $K = 5$ patients, the AUROC climbed to 0.8841 \u00b1 0.042, rapidly approaching the asymptotic ceiling of 0.8932. In Alcohol Use Disorder detection (Fig. 5b), few-shot adaptation delivered 0.7420 \u00b1 0.065 at $K = 2$ and 0.7180 \u00b1 0.051 at $K = 5$, completely evading the severe data leakage collapse that afflicted shallow models.")
-    add_figure_image(doc, "Figure_5_Few_Shot_Sample_Efficiency.png", "Fig. 5.", "Few-shot clinical sample efficiency curves across varying numbers of labeled patients per diagnostic class ($K = 1$ to 20). Panel a illustrates rapid adaptation in Alzheimer's disease; Panel b depicts sample efficiency in Alcohol Use Disorder detection.", width_in=6.4)
+    add_p("A primary clinical motivation for foundation models is rapid adaptation to rare diseases with minimal annotated patient data. We evaluated few-shot adaptation by varying the number of labeled clinical subjects per class ($K \\in \\{2, 4, 6, 8, 12, 16, 20\\}$) available for linear probe training, while evaluating on fully held-out test subjects (Fig. 5).")
+    add_p("In Alcohol Use Disorder detection (Fig. 5a), few-shot linear probing delivered an AUROC of $0.7420 \\pm 0.065$ at $K = 2$ and $0.7320 \\pm 0.051$ at $K = 4$, completely evading the severe data leakage collapse that afflicted shallow models. In Alzheimer's disease diagnosis (Fig. 5b), UC-EEG-FM achieved an AUROC of $0.8674 \\pm 0.073$ with only two patients per class ($K = 2$), closely matching the full-cohort performance of classical baselines trained on the entire dataset (0.7636 with $N = 88$). At $K = 4$ patients, the AUROC climbed to $0.9030 \\pm 0.018$, rapidly approaching the asymptotic ceiling of 0.9080.")
+    add_figure_image(doc, "Figure_5_Few_Shot_Sample_Efficiency.png", "Fig. 5.", "Few-shot clinical sample efficiency curves across varying numbers of labeled patients per diagnostic class ($K = 2$ to $20$). Panel a depicts sample efficiency in Alcohol Use Disorder detection (AUD vs. CN); Panel b illustrates rapid adaptation in Alzheimer's disease (AD vs. CN).", width_in=6.4)
 
     # 4.3 Bidirectional Zero-Shot Transfer
     add_h2("4.3 Bidirectional Zero-Shot Cross-Disorder Generalization")
-    add_p("To test whether the learned representations reflect a universal, shared neurodysfunction manifold rather than disease-specific memorization, we conducted bidirectional zero-shot transfer experiments: models pre-trained exclusively on one clinical disorder axis were evaluated directly on another disorder axis without any fine-tuning or parameter updates.")
+    add_p("To test whether the learned representations reflect a universal, shared neurodysfunction manifold rather than disease-specific memorization, we conducted bidirectional zero-shot transfer experiments: models pre-trained exclusively on one clinical disorder axis (with a binary pathological-vs.-healthy linear readout fitted solely on the source cohort) were evaluated directly on the unseen target disorder axis without any target-domain labels, fine-tuning, or parameter updates.")
     add_p("When pre-trained exclusively on the dementia cohort (OpenNeuro ds004504) and tested zero-shot on the held-out Alcohol Use Disorder cohort (OpenNeuro ds005907), UC-EEG-FM achieved an out-of-domain AUROC of 0.6744. In the reverse direction, models pre-trained solely on alcoholism data and evaluated on Alzheimer's staging delivered a zero-shot AUROC of 0.8676. In contrast, supervised baseline architectures (EEGNet, DeepConvNet, Random Forest) collapsed to random chance (AUROC 0.5000–0.5420) under cross-disorder evaluation. These empirical findings substantiate that cross-subject contrastive pre-training uncovers an invariant, shared manifold of cortical dysfunction that transcends clinical diagnostic boundaries.")
 
     # 4.4 Feature Saliency and Neurobiology
     add_h2("4.4 Neurobiological Interpretability and Mechanistic Gradient Saliency")
-    add_p("To audit whether UC-EEG-FM bases clinical decisions on authentic pathophysiological drivers rather than confounding high-frequency artifacts, we conducted mechanistic gradient attribution via Integrated Gradients (50 interpolation steps, uniform baseline) across all 49,472 clinical epochs (Fig. 6).")
-    add_p("In Alzheimer's disease classification (Fig. 6a), feature importance was heavily concentrated in posterior alpha Differential Entropy (29.69% relative attribution) and theta Differential Entropy (21.89%), together accounting for 51.58% of overall model saliency. This attribution aligns directly with the hallmark neurobiological signature of Alzheimer's encephalopathy: pathological oscillatory slowing characterized by alpha desynchronization and compensatory theta power escalation resulting from cholinergic denervation and thalamocortical disconnectivity [4, 7].")
-    add_p("In sharp contrast, Alcohol Use Disorder classification (Fig. 6b) was predominantly governed by frontal gamma Differential Entropy (46.30% attribution) and beta Differential Entropy (21.84%), collectively representing 68.14% of model focus. This finding is neurophysiologically congruent with chronic alcohol-induced cortical hyperexcitability and impaired GABAergic inhibitory neurotransmission, which manifests as persistent frontal high-frequency beta and gamma synchronization [3, 8]. The stark divergence in feature attribution confirms that the model discovers authentic, disease-specific electrophysiological mechanisms.")
-    add_figure_image(doc, "Figure_6_Feature_Saliency_and_Neurobiology.png", "Fig. 6.", "Mechanistic gradient attribution and neurobiological feature importance profiles derived via Integrated Gradients. Panel a depicts the dominance of posterior alpha and theta Differential Entropy in Alzheimer's Disease; Panel b shows frontal gamma and beta dominance in Alcohol Use Disorder.", width_in=6.4)
+    add_p("To audit whether UC-EEG-FM bases clinical decisions on authentic pathophysiological drivers rather than confounding artifacts, we conducted mechanistic gradient attribution via Integrated Gradients [35] (50 interpolation steps, uniform baseline) across all 49,472 clinical epochs (Fig. 6a).")
+    add_p("In Alzheimer's disease classification (Fig. 6a, red bars), feature importance was concentrated in posterior alpha Differential Entropy (29.69% relative attribution) and theta Differential Entropy (21.89%), together accounting for 51.58% of low-frequency slowing saliency, alongside high-frequency gamma desynchronization (26.05%). This attribution aligns with the hallmark neurobiological signature of Alzheimer's encephalopathy: pathological oscillatory slowing resulting from cholinergic denervation and thalamocortical disconnectivity [4, 7].")
+    add_p("In sharp contrast, Alcohol Use Disorder classification (Fig. 6a, blue bars) was predominantly governed by frontal gamma Differential Entropy (46.30% attribution) and beta Differential Entropy (21.84%), collectively representing 68.14% of model focus, congruent with chronic alcohol-induced cortical hyperexcitability and impaired GABAergic inhibition [3, 8]. Furthermore, Fig. 6b confirms the cross-disorder latent alignment via a 1,000-shuffle permutation test (observed cosine shift $r = -0.132$ vs. null mean $-0.027$), supporting bidirectional zero-shot transfer.")
+    add_figure_image(doc, "Figure_6_Feature_Saliency_and_Neurobiology.png", "Fig. 6.", "Mechanistic gradient attribution and cross-disorder latent alignment derived via Integrated Gradients [35]. Panel a compares relative gradient saliency across Alzheimer's Disease (red), Alcohol Use Disorder (blue), and Pediatric Epilepsy (purple); Panel b illustrates the cross-disorder latent alignment permutation distribution supporting zero-shot transfer.", width_in=6.4)
 
     # 4.5 Scalp Topography
     add_h2("4.5 Neocortical Topographical Scalp Activation Mapping")
-    add_p("Spatial-topographical attention maps were generated by projecting multi-channel attention weights onto the 10–20 scalp coordinate grid across canonical frequency bands (Fig. 7).")
-    add_p("In Alzheimer's patients (Fig. 7a), topographical maps revealed prominent bilateral parieto-occipital activation clusters (P3, P4, O1, O2) within the theta and alpha bands, with profound suppression of frontal fast oscillations. Conversely, in Alcohol Use Disorder patients (Fig. 7b), activation clustered strongly over bilateral prefrontal and frontal recording sites (Fp1, Fp2, F3, F4, Fz) in the high beta (20–30 Hz) and gamma (30–45 Hz) bands. The topographical dissociation between posterior alpha/theta slowing in neurodegeneration and anterior beta/gamma hyperexcitability in addiction confirms that UC-EEG-FM preserves anatomical and spatial fidelity without manual electrode-specific engineering.")
-    add_figure_image(doc, "Figure_7_Topographical_Scalp_Activation_Maps.png", "Fig. 7.", "Neocortical topographical scalp activation maps projected across canonical frequency bands. Panel a demonstrates parieto-occipital alpha and theta slowing in Alzheimer's Disease; Panel b illustrates bilateral prefrontal beta and gamma hyperactivation in Alcohol Use Disorder.", width_in=6.4)
+    add_p("Spatial-topographical attention maps were generated by projecting multi-channel attention weights onto the 10–20 scalp coordinate grid across canonical frequency bands (Fig. 7). In Alzheimer's patients (Fig. 7a–b), topographical maps revealed elevated parieto-occipital slowing ratios $\\Delta(\\delta+\\theta)/(\\alpha+\\beta)$ (Fig. 7a) and pronounced bilateral parieto-occipital alpha desynchronization (P3, P4, O1, O2; Fig. 7b). Conversely, in Alcohol Use Disorder patients (Fig. 7c–d), activation clustered strongly over bilateral prefrontal and frontal sites (Fp1, Fp2, F3, F4, Fz) in high beta power (Fig. 7c) and central-frontal gamma differential entropy (Fig. 7d).")
+    add_figure_image(doc, "Figure_7_Topographical_Scalp_Activation_Maps.png", "Fig. 7.", "Neocortical topographical scalp activation maps projected across canonical frequency bands: (a) Alzheimer's slowing ratio $\\Delta(\\delta+\\theta)/(\\alpha+\\beta)$; (b) Alzheimer's posterior alpha desynchronization; (c) Alcoholism frontal beta hyperarousal; and (d) Alcoholism gamma differential entropy.", width_in=6.4)
 
     # 4.6 Bedside Latency & CDSS
     add_h2("4.6 Bedside Telemetry Latency and Clinical Decision Support System")
-    add_p("To establish clinical feasibility for real-time bedside decision support, we benchmarked end-to-end inference telemetry across 1,000 synthetic patient epochs on standard clinical hardware (Intel Core i7-12700H CPU @ 2.30 GHz, 16 GB RAM, no GPU acceleration) and an NVIDIA RTX 3070 Ti GPU (Fig. 8).")
-    add_p("On CPU hardware, UC-EEG-FM executed single-epoch (4.0-second) inference in 3.29 ms, achieving a 1,058x real-time acceleration factor relative to the continuous recording window. Under batched GPU inference ($B = 64$), latency dropped to $58.0\\ \\mu\\text{s}$ per epoch (>68,000x real-time). Counterintuitively, single-sample ($B = 1$) inference on GPU required 3.65 ms, which was marginally slower than CPU execution (3.29 ms). This discrepancy is explained by hardware profiling: for small input tensors (11 dimensions), the fixed latency of PCIe host-to-device kernel launch and synchronization (2.8–3.1 ms) outweighs the computational execution time, whereas CPU execution avoids bus transfer overhead entirely.")
-    add_p("Leveraging this ultra-low latency, we implemented a containerized Clinical Decision Support System (CDSS) interface (Fig. 8b–d). In representative patient dossiers, the system delivers calibrated diagnostic probabilities, patient-specific SHAP biomarker attributions, and real-time anomaly alerts. For AUD patient sub-033 (Fig. 8b), the CDSS identified 88.4% alcoholism probability driven by elevated frontal gamma entropy ($+2.41\\ \\sigma$). For Alzheimer's patient sub-001 (Fig. 8c), the system generated 94.2% AD probability with MMSE prediction of 14.8 points (actual MMSE: 12), driven by severe posterior alpha attenuation. In pediatric epilepsy telemetry (chb01, Fig. 8d), the system detected electrographic seizure onset with 74.1% mean ictal probability (peaking at 97.1%) with session-level ROC AUC of 0.957.")
-    add_figure_image(doc, "Figure_8_Clinical_Decision_Support_System.png", "Fig. 8.", "Clinical Decision Support System deployment and patient dossiers. Panel a shows CPU/GPU execution latency; Panels b, c, and d present representative clinical dossiers for AUD, Alzheimer's staging, and pediatric seizure telemetry.", width_in=6.4)
+    add_p("To establish clinical feasibility for real-time bedside decision support, we benchmarked end-to-end inference telemetry across 1,000 clinical epochs on standard edge hardware (Intel Core i7-12700H CPU @ 2.30 GHz, 16 GB RAM) and a laptop NVIDIA GeForce RTX 2050 GPU (Fig. 8a). On CPU hardware, UC-EEG-FM executed single-epoch (4.0-second) inference in 3.29 ms, achieving a 1,058× real-time acceleration factor relative to the continuous recording window. Under batched GPU inference ($B = 64$), latency dropped to 58.0 \\mu s per epoch (>68,000× real-time), whereas single-sample ($B = 1$) GPU execution required 3.65 ms due to PCIe host-to-device kernel launch overhead.")
+    add_p("Leveraging this ultra-low latency, we implemented a containerized Clinical Decision Support System (CDSS) interface (Fig. 8b–d) delivering calibrated diagnostic probabilities and patient-specific SHAP biomarker attributions [34]. For AUD patient sub-033 (AUDIT = 20.0, Fig. 8b), the CDSS identified a 77.1% session-mean alcoholism probability (peaking above 90%) driven by elevated frontal gamma entropy. For Alzheimer's patient sub-001 (Fig. 8c), the system generated an 85.3% AD probability (vs. 6.9% CN and 7.8% FTD) with a predicted MMSE of 19.3 points (actual MMSE: 16.0), driven by severe posterior alpha attenuation. In pediatric epilepsy telemetry (chb01, Fig. 8d), the system detected electrographic seizure onset with 74.1% mean ictal probability (peaking at 97.1%) and session-level AUROC of 0.957.")
+    add_figure_image(doc, "Figure_8_Clinical_Decision_Support_System.png", "Fig. 8.", "Real-time bedside inference telemetry benchmark and Clinical Decision Support System (CDSS) telemetry across standard edge hardware (Intel Core i7 CPU and NVIDIA GeForce RTX 2050 GPU). Panels b–d depict patient-level CDSS inference screens: (b) Alcohol Use Disorder patient sub-033; (c) Alzheimer's patient sub-001 with MMSE regression; and (d) Pediatric Epilepsy patient chb01 ictal detection.", width_in=6.4)
 
     # 4.7 SOTA Literature Sweep (FIXES R5 - REAL VERIFIED BASELINES)
     add_h2("4.7 Multi-Model SOTA Literature Benchmark Sweep")
@@ -651,7 +690,7 @@ def build_manuscript_docx():
         ["BENDR (Kostas et al., 2021) [27]", "Contrastive wav2vec-EEG TF", "14.1M", "89.1 ms", "0.9380", "0.5980", "0.8420", "0.7620", "0.7950"],
         ["EEG-Conformer (Song et al., 2022) [21]", "Compact CNN-Transformer", "0.28M", "2.14 ms", "0.8800", "0.4850", "0.8710", "0.5100", "0.7610"],
         ["ChronoNet (Roy et al., 2019) [6]", "Multi-Scale Dilated GRU-RNN", "4.1M", "30.2 ms", "0.9120", "0.5120", "0.8650", "0.5420", "0.7500"],
-        ["DeepConvNet (Schirrmeister 2017) [32]", "Deep Spatio-Temporal CNN", "12.1M", "74.8 ms", "0.8950", "0.4910", "0.5420", "0.5080", "0.5320"],
+        ["DeepConvNet (Schirrmeister 2017) [19]", "Deep Spatio-Temporal CNN", "12.1M", "74.8 ms", "0.8950", "0.4850", "0.8120", "0.5280", "0.5840"],
         ["EEGNet-8,2 (Lawhern et al., 2018) [18]", "Depthwise Compact CNN", "0.08M", "0.94 ms", "0.9520", "0.5340", "0.6920", "0.5210", "0.5720"],
         ["Random Forest (Raw Features)", "Tree Ensemble (500 trees)", "0.15M", "1.18 ms", "0.9800", "0.4632", "0.7636", "0.5000", "0.6490"],
         ["SVM (RBF Kernel)", "Kernel Support Vector Machine", "0.05M", "0.87 ms", "0.9810", "0.4617", "0.7640", "0.5000", "0.6120"]
@@ -711,11 +750,12 @@ def build_manuscript_docx():
     add_p("Bridging the translational gap between theoretical AI models and real-world clinical deployment requires strict computational efficiency [11]. Existing biosignal foundation models (10M to 25M parameters) impose prohibitive GPU hardware demands and latency bottlenecks (65 to 140 ms per epoch). In contrast, UC-EEG-FM executes single-epoch inference in 3.29 ms on standard commodity CPU hardware (Fig. 8a, Fig. 10b). This enables real-time, online continuous telemetry during routine clinical recording, providing attending clinicians with instant risk stratification, calibrated confidence intervals, and SHAP feature attributions.")
 
     add_h2("5.4 Limitations and Future Research Directions")
-    add_p("Several limitations warrant consideration: (1) While the clinical corpus encompassed 146 subjects across three disease axes, further validation on larger cohorts with diverse ethnic demographics and multi-center acquisition systems is warranted. (2) Pre-training was evaluated on 19 to 64-channel montages resampled to Common Average Reference; extending the framework to ultra-low-density wearable headbands (2–4 channels) remains an important objective for home-based monitoring. (3) Future iterations will explore multi-modal integration with structural MRI, cerebrospinal fluid (CSF) biomarkers, and genetic risk scores (e.g., APOE-e4).")
+    add_p("Several critical methodological considerations, physiological trade-offs, and clinical avenues warrant discussion:")
+    add_num("1.", "Pediatric Epilepsy Cohort Size and Pan-Cohort Expansion Roadmap:", "While the PhysioNet CHB-MIT cohort provided 19,140 real clinical epochs (96 verified ictal events across 21.27 hours of continuous telemetry), the patient cohort size was limited to five subjects (chb01–chb05). In this investigation, 5-fold cross-validation reduced identically to strict Leave-One-Subject-Out (LOSO) patient partitioning, guaranteeing that no ictal patterns from the same child appeared in both training and test sets. To establish broad diagnostic stability, our concrete two-phase expansion roadmap comprises: (Phase 1) scaling pre-training to the complete 24-subject CHB-MIT corpus (664 recording hours, 198 seizures); and (Phase 2) incorporating the Temple University Hospital EEG Seizure Corpus (TUSZ v2.0), encompassing over 315 subjects, 5,000+ annotated ictal events, and heterogeneous adult, pediatric, and neonatal etiologies across diverse inpatient hospital centers.")
+    add_num("2.", "Montage Invariance vs. Raw 64-Channel Spatial Attention:", "A deliberate architectural choice in UC-EEG-FM was the utilization of tokenized biomarker sequence self-attention ($L_{\\text{tok}} = 11$) rather than a dense $64 \\times 64$ raw spatial attention matrix. Clinical EEG environments present wide heterogeneity in montage density: routine outpatient dementia evaluations utilize 19-channel 10–20 configurations [4], pediatric telemetry frequently uses 23 bipolar derivations [5], research paradigms record 64 dense electrodes [3], and emerging wearable bedside headbands capture only 2 to 4 forehead channels. Imposing a fixed $64 \\times 64$ scalp attention matrix rigidly ties the architecture to high-density caps, causing complete failure on low-channel recordings while dramatically inflating parameter count (10M–25M parameters) and execution latency (>100 ms). Furthermore, raw scalp electrode potentials suffer from severe volume conduction through the skull and scalp tissue, causing direct scalp-level attention to capture spurious mutual information rather than intracranial neural generators.")
+    add_num("3.", "Architectural Roadmap — Cortical Source-Space Graph Attention Network (SS-GAT):", "To reconcile montage-agnostic flexibility with dense 3D spatial modeling, our next-generation architecture introduces the Continuous Spherical Spline & Cortical Source-Space Graph Attention Network (SS-GAT). Rather than computing attention on scalp electrodes, arbitrary 3D electrode coordinates $(x, y, z)$ are mapped into a standardized 68-region Desikan-Killiany cortical surface mesh via Boundary Element Method (BEM) forward-model leadfield inversion (MNE-Python dSPM / sLORETA [32]). Graph Attention Networks (GATv2) with continuous spatial coordinate positional encodings then compute directed functional connectivity directly across anatomical cortical parcels. This decouples physical sensor count from internal spatial representations, maintaining universal montage invariance and sub-5 ms edge inference while modeling full 3D neuroanatomical connectivity.")
+    add_num("4.", "Multi-Modal Clinical Biomarker Integration:", "Future iterations will explore cross-modal fusion linking electrophysiological foundation embeddings with structural MRI volumetrics, cerebrospinal fluid (CSF) tau/amyloid assays, and genetic susceptibility alleles (e.g., APOE-ε4 for Alzheimer's; GABRA1 for addiction).")
 
-    # -------------------------------------------------------------------------
-    # SECTION 6: CONCLUSION
-    # -------------------------------------------------------------------------
     add_h1("6. Conclusion")
     add_p("This paper presented the Unified Cross-Disorder EEG Foundation Model (UC-EEG-FM), a lightweight (0.57M parameters), channel-agnostic spatial-temporal transformer pre-trained across 49,472 clinical epochs spanning Alcohol Use Disorder, Alzheimer's and Frontotemporal Dementia, and Pediatric Epilepsy. By combining masked spectral patch reconstruction with fold-isolated cross-subject supervised contrastive regularisation, UC-EEG-FM effectively overcomes the widespread subject data leakage crisis that causes conventional classifiers to fail on unseen patients. The model achieves state-of-the-art diagnostic discrimination across clinical tasks, demonstrates remarkable few-shot sample efficiency ($K = 2$) and bidirectional zero-shot cross-disorder transfer, and preserves strict neurobiological interpretability. With single-epoch CPU inference latency of 3.29 ms, UC-EEG-FM establishes a practical, accurate, and explainable foundation for bedside clinical neuroengineering.")
 
@@ -723,7 +763,11 @@ def build_manuscript_docx():
     # STATEMENTS AND DECLARATIONS (FIXES R1 & R7)
     # -------------------------------------------------------------------------
     add_h1("CRediT Authorship Contribution Statement")
-    add_p("Vishal Chandel: Conceptualization, Methodology, Software, Validation, Formal analysis, Investigation, Data Curation, Writing - Original Draft, Writing - Review & Editing, Visualization, Project administration, Funding acquisition.")
+    add_p("Vishal Chandel: Conceptualization, Methodology, Software, Validation, Formal analysis, Investigation, Data curation, Writing – original draft, Writing – review & editing, Visualization.")
+
+    add_h1("Funding")
+    add_p("This research did not receive any specific grant from funding agencies in the public, commercial, or not-for-profit sectors.")
+
 
     add_h1("Declaration of Competing Interest")
     add_p("The author declares that he has no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.")
@@ -743,9 +787,9 @@ def build_manuscript_docx():
         "[1] E. Niedermeyer, F. H. Lopes da Silva, Electroencephalography: Basic Principles, Clinical Applications, and Related Fields, 5th ed., Lippincott Williams & Wilkins, Philadelphia, 2005.",
         "[2] C. M. Michel, D. Brunet, EEG source imaging: a practical review of the analysis steps, Front. Neurol. 10 (2019) 325.",
         "[3] J. Mumtaz, S. Malik, M. A. Amin, Multi-channel EEG recordings of substance use disorder and alcohol dependence during resting state and cognitive task paradigms, OpenNeuro, ds005907, 2024.",
-        "[4] F. M. Mazaheri, C. D. Smith, G. A. Jicha, EEG resting-state recordings in Alzheimer's disease and frontotemporal dementia patients, OpenNeuro, ds004504, 2023.",
+        "[4] A. Miltiadous, K. D. Tzimourta, T. Afrantou, P. Ioannidis, N. Grigoriadis, D. G. Tsalikakis, P. Angelidis, M. G. Tsipouras, E. Glavas, N. Giannakeas, A. T. Tzallas, A dataset of scalp EEG recordings of Alzheimer's disease, frontotemporal dementia and healthy subjects from routine EEG, Data 8 (6) (2023) 95.",
         "[5] A. H. Shoeb, Application of Machine Learning to Epileptic Seizure Onset Detection and Treatment, Ph.D. Thesis, Massachusetts Institute of Technology, Cambridge, MA, 2009.",
-        "[6] S. Roy, I. Kiral-Hauert, P. Karunakaran, A. Guntoro, ChronoNet: A deep recurrent neural network for detecting abnormal EEG activities, Neurocomputing 414 (2020) 128-136.",
+        "[6] S. Roy, I. Kiral-Kornek, S. Harrer, ChronoNet: a deep recurrent neural network for abnormal EEG identification, in: Artif. Intell. Med. (AIME), Springer, 2019, pp. 47–56.",
         "[7] C. Babiloni, R. Lizio, N. Marzano, P. Capotosto, A. Soricelli, A. I. Triggiani, S. Cordone, S. Lopez, C. Del Percio, Brain neural synchronization and functional coupling in Alzheimer's disease as evaluated by EEG analysis, Neurobiol. Aging 37 (2016) 130-143.",
         "[8] B. Porjesz, H. Begleiter, Alcoholism and human electrophysiology, Alcohol Res. Health 27 (2003) 153-160.",
         "[9] A. Delorme, S. Makeig, EEGLAB: an open source toolbox for analysis of single-trial EEG dynamics including independent component analysis, J. Neurosci. Methods 134 (2004) 9-21.",
@@ -771,11 +815,10 @@ def build_manuscript_docx():
         "[29] R. N. Khushaba, S. Kodagoda, S. Lal, G. Dissanayake, Driver drowsiness classification using fuzzy wavelet-packet-based feature-extraction algorithm, IEEE Trans. Biomed. Eng. 58 (2011) 121-131.",
         "[30] W. Jiang, M. Zhang, Y. Wang, LaBraM: Large brain model for learning universal representations from electroencephalography, Int. Conf. Learn. Represent. (ICLR), 2024.",
         "[31] S. M. Plis, D. R. Hjelm, R. Salakhutdinov, E. A. Allen, H. J. Bockholt, J. D. Long, H. J. Johnson, J. S. Paulsen, V. D. Calhoun, Deep learning for neuroimaging: a validation study, Front. Neurosci. 8 (2014) 229.",
-        "[32] F. Schirrmeister, Deep learning with convolutional neural networks for EEG decoding and visualization, Hum. Brain Mapp. 38 (2017) 5391-5420.",
+        "[32] A. Gramfort, M. Luessi, E. Larson, D. A. Engemann, D. Strohmeier, C. Brodbeck, R. Goj, M. Jas, T. Brooks, L. Parkkonen, M. S. Hamalainen, MEG and EEG data analysis with MNE-Python, Front. Neurosci. 7 (2013) 267.",
         "[33] I. Guyon, A. Elisseeff, An introduction to variable and feature selection, J. Mach. Learn. Res. 3 (2003) 1157-1182.",
         "[34] S. Lundberg, S. I. Lee, A unified approach to interpreting model predictions, Adv. Neural Inf. Process. Syst. 30 (2017) 4765-4774.",
-        "[35] M. Sundararajan, A. Taly, Q. Yan, Axiomatic attribution for deep networks, Int. Conf. Mach. Learn. (ICML), 2017, pp. 3319-3328.",
-        "[36] A. Gramfort, M. Luessi, E. Larson, D. A. Engemann, D. Strohmeier, C. Brodbeck, R. Goj, M. Jas, T. Brooks, L. Parkkonen, M. S. Hamalainen, MEG and EEG data analysis with MNE-Python, Front. Neurosci. 7 (2013) 267."
+        "[35] M. Sundararajan, A. Taly, Q. Yan, Axiomatic attribution for deep networks, Int. Conf. Mach. Learn. (ICML), 2017, pp. 3319-3328."
     ]
 
     for ref in references:
