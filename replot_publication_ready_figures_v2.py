@@ -148,6 +148,7 @@ ax1.set_title(f"a  Cross-Disorder Latent Manifold (PCA)\nExplained Variance: {re
               fontweight='bold', fontsize=20, loc='left', pad=12)
 ax1.set_xlabel("Principal Component 1", fontweight='bold', fontsize=19)
 ax1.set_ylabel("Principal Component 2", fontweight='bold', fontsize=19)
+ax1.set_ylim(0, 1.55)
 ax1.tick_params(labelsize=17)
 ax1.legend(frameon=True, facecolor='white', framealpha=0.95, edgecolor='#b0b0b0', loc='upper right', fontsize=15.5)
 ax1.grid(True, linestyle=':', alpha=0.5)
@@ -378,7 +379,7 @@ ax1.tick_params(labelsize=17)
 ax1.grid(True, linestyle=':', alpha=0.5)
 ax1.legend(loc='upper right', frameon=True, facecolor='white', framealpha=0.95, edgecolor='#b0b0b0', fontsize=15)
 
-ax1.text(0.04, 0.44, f"Zero-Shot Transfer:\n* AD-Probe on AUD: AUROC = {zero_shot_auc:.3f}\n* AUD-Probe on AD: AUROC = 0.868\n(Shared Circuit Dysrhythmia)",
+ax1.text(0.04, 0.58, f"Zero-Shot Transfer:\n* AD-Probe on AUD: AUROC = {zero_shot_auc:.3f}\n* AUD-Probe on AD: AUROC = 0.868\n(Shared Circuit Dysrhythmia)",
          transform=ax1.transAxes, fontsize=16, fontweight='bold',
          bbox=dict(boxstyle="round,pad=0.6", facecolor="#f0f7fd", edgecolor="#1f77b4", lw=1.4, alpha=0.96))
 
