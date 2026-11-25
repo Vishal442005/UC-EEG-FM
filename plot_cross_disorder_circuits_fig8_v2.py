@@ -124,7 +124,8 @@ ax.text(20.0, 76.5, "Cholinergic Loss", ha='center', fontsize=7.5 * SCALE, color
 
 # Break mark
 draw_arrow(12.5, 68.0, 16.5, 75.0, color="#DC2626", lw=2.0, style="->")
-ax.text(14.5, 72.0, "✕ Break", fontsize=8.0 * SCALE, fontweight='bold', color='#BE123C', zorder=9)
+ax.text(13.8, 70.6, "✕ Break", ha='center', fontsize=7.8 * SCALE, fontweight='bold', color='#BE123C',
+        bbox=dict(boxstyle="round,pad=0.18", facecolor="#FFFFFF", edgecolor="#DC2626", lw=0.8), zorder=9)
 
 # A2: Direct Waveform Comparison & Quantitative Gauges (Right: 25.2 to 47.8)
 draw_box(25.2, 49.5, 22.6, 36.5, bg_color="#FFFFFF", edgecolor="black", lw=1.5, r=0.6)
@@ -173,7 +174,8 @@ ax.text(69.5, 80.0, "GABA_A Receptor", ha='center', fontsize=8.0 * SCALE, fontwe
 ax.text(69.5, 76.5, "Downregulation", ha='center', fontsize=7.5 * SCALE, color='#2563EB', zorder=8)
 
 draw_arrow(66.0, 76.0, 61.5, 71.0, color="#2563EB", lw=2.0, style="->")
-ax.text(64.5, 74.5, "+ Firing", fontsize=8.0 * SCALE, fontweight='bold', color='#1D4ED8', zorder=9)
+ax.text(63.5, 71.2, "+ Firing", ha='center', fontsize=7.8 * SCALE, fontweight='bold', color='#1D4ED8',
+        bbox=dict(boxstyle="round,pad=0.18", facecolor="#FFFFFF", edgecolor="#2563EB", lw=0.8), zorder=9)
 
 # B2: Direct Waveform Comparison & Quantitative Gauges (Right: 74.7 to 97.3)
 draw_box(74.7, 49.5, 22.6, 36.5, bg_color="#FFFFFF", edgecolor="black", lw=1.5, r=0.6)
@@ -223,7 +225,8 @@ ax.text(20.0, 34.5, "23 Bipolar Pairs", ha='center', fontsize=8.0 * SCALE, fontw
 ax.text(20.0, 31.0, "CHB-MIT Telemetry", ha='center', fontsize=7.5 * SCALE, color='#9333EA', zorder=8)
 
 draw_arrow(12.5, 23.5, 16.5, 29.5, color="#9333EA", lw=2.0, style="->")
-ax.text(14.5, 27.5, "Phase Lock", fontsize=7.8 * SCALE, fontweight='bold', color='#7E22CE', zorder=9)
+ax.text(13.8, 25.0, "Phase Lock", ha='center', fontsize=7.6 * SCALE, fontweight='bold', color='#7E22CE',
+        bbox=dict(boxstyle="round,pad=0.18", facecolor="#FFFFFF", edgecolor="#9333EA", lw=0.8), zorder=9)
 
 # C2: Seizure Waveform Transition & Quantitative Gauges (Right: 25.2 to 47.8)
 draw_box(25.2, 4.0, 22.6, 36.5, bg_color="#FFFFFF", edgecolor="black", lw=1.5, r=0.6)
@@ -242,8 +245,9 @@ for spk_idx in [120, 150, 180, 210, 240]:
     sig_epi[spk_idx-5:spk_idx+5] += 2.2 * np.exp(-((np.arange(10)-5)**2)/3)
 sig_epi[100:] += 1.2 * np.sin(2 * np.pi * 3.0 * (t_epi[100:]/18.0)) # 3 Hz slow wave
 ax.plot(27.2 + t_epi, 28.5 + sig_epi, color='#7E22CE', lw=1.8, zorder=8)
-ax.axvline(27.2 + t_epi[100], color='red', linestyle='--', lw=1.2, zorder=9)
-ax.text(27.2 + t_epi[100] + 0.4, 25.0, "Ictal Seizure Onset (>200 μV)", fontsize=7.8 * SCALE, fontweight='bold', color='red', zorder=10)
+onset_x = 27.2 + t_epi[100]
+ax.plot([onset_x, onset_x], [24.4, 33.2], color='red', linestyle='--', lw=1.6, zorder=9)
+ax.text(onset_x + 0.4, 24.8, "Ictal Seizure Onset (>200 μV)", fontsize=7.6 * SCALE, fontweight='bold', color='red', zorder=10)
 
 # Quantitative Biomarker Gauges
 epi_badges = [
@@ -270,32 +274,37 @@ ax.text(52.5, 43.0, "d  Universal Cross-Disorder Hypersphere Manifold (S⁶³) &
 draw_box(52.3, 4.0, 21.7, 36.5, bg_color="#FFFFFF", edgecolor="black", lw=1.5, r=0.6)
 ax.text(53.3, 37.8, "Hypersphere Manifold Geometry (S⁶³):", fontsize=10.5 * SCALE, fontweight='bold', color='#1E293B', zorder=6)
 
-# Rendered 3D-shaded sphere
-sph_cx, sph_cy, sph_r = 63.15, 20.5, 11.5
+# Rendered 3D-shaded sphere (cleanly fitted with generous padding inside D1 box x: 52.3..74.0, y: 4.0..40.5)
+sph_cx, sph_cy, sph_r = 63.15, 20.5, 9.6
 sph_circ = Circle((sph_cx, sph_cy), sph_r, facecolor='#FEF9C3', edgecolor='black', lw=2.0, zorder=7)
 ax.add_patch(sph_circ)
 # Equator and meridian
-ax.add_patch(Ellipse((sph_cx, sph_cy), sph_r*2, sph_r*0.75, facecolor='none', edgecolor='#CBD5E1', linestyle='--', lw=1.2, zorder=8))
-ax.add_patch(Ellipse((sph_cx, sph_cy), sph_r*0.75, sph_r*2, facecolor='none', edgecolor='#CBD5E1', linestyle='--', lw=1.2, zorder=8))
+ax.add_patch(Ellipse((sph_cx, sph_cy), sph_r*2, sph_r*0.72, facecolor='none', edgecolor='#CBD5E1', linestyle='--', lw=1.2, zorder=8))
+ax.add_patch(Ellipse((sph_cx, sph_cy), sph_r*0.72, sph_r*2, facecolor='none', edgecolor='#CBD5E1', linestyle='--', lw=1.2, zorder=8))
 
 # Antipodal Poles: AD Slowing (Top-Left) vs AUD Hyperarousal (Bottom-Right)
-ad_pole = (sph_cx - 7.0, sph_cy + 6.8)
-aud_pole = (sph_cx + 7.0, sph_cy - 6.8)
-hc_center = (sph_cx - 0.8, sph_cy + 0.8)
+ad_pole = (sph_cx - 5.6, sph_cy + 5.6)
+aud_pole = (sph_cx + 5.6, sph_cy - 5.6)
+hc_center = (sph_cx - 0.3, sph_cy + 0.3)
 
 # Connect with golden neurodysfunction axis
 ax.plot([ad_pole[0], aud_pole[0]], [ad_pole[1], aud_pole[1]], color='#D97706', linestyle=':', lw=3.0, zorder=9)
-ax.text(sph_cx - 3.2, sph_cy - 4.5, "Neurodysfunction Axis", fontsize=8.2 * SCALE, fontweight='bold', color='#B45309', rotation=-45, zorder=12)
+ax.text(sph_cx - 3.6, sph_cy - 3.6, "Neurodysfunction Axis", fontsize=7.5 * SCALE, fontweight='bold', color='#B45309',
+        rotation=-45, ha='center', va='center',
+        bbox=dict(boxstyle="round,pad=0.22", facecolor="#FEFCE8", edgecolor="#D97706", lw=0.9), zorder=12)
 
-# Scatter cluster dots
-ax.scatter([ad_pole[0]], [ad_pole[1]], s=260, color='#DC2626', edgecolor='black', lw=1.6, zorder=10)
-ax.text(ad_pole[0] - 1.2, ad_pole[1] + 2.4, "AD Slowing Pole\n(Low Freq Slow)", ha='center', fontsize=8.5 * SCALE, fontweight='bold', color='#DC2626', zorder=11)
+# Scatter cluster dots & clean non-overlapping labels strictly inside D1 box
+ax.scatter([ad_pole[0]], [ad_pole[1]], s=240, color='#DC2626', edgecolor='black', lw=1.6, zorder=10)
+ax.text(ad_pole[0] + 0.4, ad_pole[1] + 2.6, "AD Slowing Pole\n(Low Freq Slow)", ha='center', fontsize=8.0 * SCALE, fontweight='bold', color='#DC2626',
+        bbox=dict(boxstyle="round,pad=0.22", facecolor="#FFFFFF", edgecolor="#DC2626", lw=0.9, alpha=0.95), zorder=11)
 
-ax.scatter([aud_pole[0]], [aud_pole[1]], s=260, color='#2563EB', edgecolor='black', lw=1.6, zorder=10)
-ax.text(aud_pole[0] + 1.2, aud_pole[1] - 3.6, "AUD Hyperarousal Pole\n(High Freq Fast)", ha='center', fontsize=8.5 * SCALE, fontweight='bold', color='#2563EB', zorder=11)
+ax.scatter([aud_pole[0]], [aud_pole[1]], s=240, color='#2563EB', edgecolor='black', lw=1.6, zorder=10)
+ax.text(aud_pole[0] - 0.6, aud_pole[1] - 3.8, "AUD Hyperarousal Pole\n(High Freq Fast)", ha='center', fontsize=8.0 * SCALE, fontweight='bold', color='#2563EB',
+        bbox=dict(boxstyle="round,pad=0.22", facecolor="#FFFFFF", edgecolor="#2563EB", lw=0.9, alpha=0.95), zorder=11)
 
-ax.scatter([hc_center[0]], [hc_center[1]], s=200, color='#16A34A', edgecolor='black', lw=1.6, zorder=10)
-ax.text(hc_center[0] + 3.4, hc_center[1] + 1.4, "Healthy Equilibrium\n(Normative)", fontsize=8.0 * SCALE, fontweight='bold', color='#166534', zorder=11)
+ax.scatter([hc_center[0]], [hc_center[1]], s=190, color='#16A34A', edgecolor='black', lw=1.6, zorder=10)
+ax.text(hc_center[0] + 1.4, hc_center[1] + 1.8, "Healthy Equilibrium\n(Normative)", ha='left', fontsize=7.6 * SCALE, fontweight='bold', color='#166534',
+        bbox=dict(boxstyle="round,pad=0.22", facecolor="#F0FDF4", edgecolor="#16A34A", lw=0.9, alpha=0.95), zorder=11)
 
 # D2: Transfer Rationale & Metrics (Right: 74.7 to 97.3)
 draw_box(74.7, 4.0, 22.6, 36.5, bg_color="#FFFFFF", edgecolor="black", lw=1.5, r=0.6)

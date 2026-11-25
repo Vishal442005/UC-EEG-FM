@@ -135,18 +135,18 @@ draw_arrow(16.25, 67.5, 16.25, 63.8, color="#0284C7", lw=2.2)
 draw_box(2.8, 41.5, 26.9, 21.5, bg_color="#FFFFFF", edgecolor="black", lw=1.6, r=0.6)
 ax.text(3.8, 60.5, "2. Multi-Channel EEG & CAR Standardization", fontsize=11.5 * SCALE, fontweight='bold', color='#1E293B', zorder=6)
 
-# Draw 4 multi-channel EEG waveform traces
+# Draw 4 multi-channel EEG waveform traces (shifted up to leave clean clearance above CAR box)
 trace_colors = ["#2563EB", "#DC2626", "#16A34A", "#9333EA"]
 trace_labels = ["Fp1 (Frontal)", "C3 (Central)", "Pz (Parietal)", "O1 (Occipital)"]
 for i in range(4):
-    wy = 54.5 - i * 3.6
-    ax.text(3.8, wy + 0.6, trace_labels[i], fontsize=8.5 * SCALE, fontweight='bold', color=trace_colors[i], zorder=7)
-    draw_clean_waveform(12.5, wy, 16.2, 2.6, freq=3.0 + i*1.5, col=trace_colors[i], lw=1.8)
+    wy = 56.5 - i * 2.65
+    ax.text(3.8, wy + 0.35, trace_labels[i], fontsize=8.4 * SCALE, fontweight='bold', color=trace_colors[i], zorder=7)
+    draw_clean_waveform(12.5, wy, 16.2, 1.9, freq=3.0 + i*1.5, col=trace_colors[i], lw=1.8)
 
 # Processing badges
-draw_box(3.8, 42.6, 24.9, 3.8, bg_color="#F1F5F9", edgecolor="black", lw=1.0, r=0.4)
-ax.text(16.25, 44.5, r"CAR: $x_c^{\mathrm{CAR}}(t) = x_c(t) - \frac{1}{C}\sum x_j(t)$  |  0.5–45 Hz Bandpass  |  4.0s Window",
-        ha='center', va='center', fontsize=8.8 * SCALE, fontweight='bold', color='#0F172A', zorder=7)
+draw_box(3.8, 42.3, 24.9, 3.6, bg_color="#F1F5F9", edgecolor="black", lw=1.1, r=0.4)
+ax.text(16.25, 44.1, r"CAR: $x_c^{\mathrm{CAR}}(t) = x_c(t) - \frac{1}{C}\sum x_j(t)$  |  0.5–45 Hz  |  4.0s Epoch",
+        ha='center', va='center', fontsize=8.5 * SCALE, fontweight='bold', color='#0F172A', zorder=7)
 
 # Flow arrow A2 -> A3
 draw_arrow(16.25, 41.5, 16.25, 37.8, color="#0284C7", lw=2.2)
@@ -223,19 +223,20 @@ draw_box(34.2, 33.5, 31.6, 32.0, bg_color="#FFFFFF", edgecolor="black", lw=1.8, 
 ax.text(35.2, 62.8, "2. Spatial-Temporal Transformer Encoder (0.57M Params)", fontsize=11.5 * SCALE, fontweight='bold', color='#1E293B', zorder=6)
 
 # Internal MHSA Block (Left side)
-draw_box(35.2, 35.0, 14.5, 25.5, bg_color="#FFFBEB", edgecolor="black", lw=1.2, r=0.5)
-ax.text(42.45, 58.2, "Multi-Head Attention", ha='center', fontsize=9.5 * SCALE, fontweight='bold', color='#B45309', zorder=7)
-ax.text(42.45, 56.0, "8 Heads (d_k = 16)", ha='center', fontsize=8.2 * SCALE, color='#92400E', zorder=7)
+draw_box(35.2, 35.2, 14.5, 25.3, bg_color="#FFFBEB", edgecolor="black", lw=1.2, r=0.5)
+ax.text(42.45, 58.3, "Multi-Head Attention", ha='center', fontsize=9.5 * SCALE, fontweight='bold', color='#B45309', zorder=7)
+ax.text(42.45, 56.2, "8 Heads (d_k = 16)", ha='center', fontsize=8.2 * SCALE, color='#92400E', zorder=7)
 
-# Draw simulated attention weight heatmap (4x4 colored cells)
+# Draw simulated attention weight heatmap (4x4 colored cells cleanly separated above formula)
 np.random.seed(10)
 att_map = np.random.uniform(0.1, 1.0, (4, 4))
 for r in range(4):
     for c in range(4):
         val = att_map[r, c]
         cell_col = plt.cm.Blues(val * 0.8 + 0.2)
-        ax.add_patch(Rectangle((37.2 + c * 2.6, 43.5 - r * 2.6), 2.4, 2.4,
-                               facecolor=cell_col, edgecolor="black", lw=0.6, zorder=8))
+        ax.add_patch(Rectangle((37.6 + c * 2.4, 51.0 - r * 2.4), 2.15, 2.15,
+                               facecolor=cell_col, edgecolor="black", lw=0.7, zorder=8))
+ax.text(42.45, 39.2, "Q  x  K^T -> Softmax -> V", ha='center', fontsize=7.6 * SCALE, color='#475569', zorder=9)
 ax.text(42.45, 36.8, r"$A = \mathrm{softmax}(QK^T/\sqrt{d_k})V$", ha='center', fontsize=8.2 * SCALE, fontweight='bold', color='#1E3A8A', zorder=9)
 
 # Internal FFN Block (Right side)
@@ -375,17 +376,23 @@ ax.text(72.5, 32.0, "BEDSIDE TELEMETRY MONITOR", fontsize=8.5 * SCALE, fontweigh
 # Mini EEG strip on monitor
 draw_clean_waveform(72.5, 27.0, 22.5, 3.5, freq=6.0, col="#4ADE80", lw=1.6)
 
-# Gauges and patient probabilities on monitor
-draw_box(72.5, 16.0, 10.5, 9.5, bg_color="#1E293B", edgecolor="#334155", lw=1.0, r=0.4)
-ax.text(77.75, 23.5, "AUD Risk Gauge", ha='center', fontsize=8.0 * SCALE, fontweight='bold', color='#94A3B8', zorder=8)
-ax.text(77.75, 19.5, "77.1%", ha='center', fontsize=14.0 * SCALE, fontweight='bold', color='#F87171', zorder=8)
-ax.text(77.75, 17.2, "HIGH RISK (sub-033)", ha='center', fontsize=7.2 * SCALE, color='#EF4444', zorder=8)
+# Gauges and patient probabilities on monitor (with intuitive visual bar & risk arc)
+draw_box(72.5, 15.8, 10.5, 9.8, bg_color="#1E293B", edgecolor="#475569", lw=1.0, r=0.4)
+ax.text(77.75, 23.8, "AUD Risk Gauge", ha='center', fontsize=8.0 * SCALE, fontweight='bold', color='#94A3B8', zorder=8)
+# Visual risk bar meter inside dark box
+draw_box(73.6, 21.0, 8.3, 1.3, bg_color="#0F172A", edgecolor="#475569", lw=0.8, r=0.2)
+draw_box(73.6, 21.0, 8.3 * 0.771, 1.3, bg_color="#EF4444", edgecolor="none", lw=0.0, r=0.2)
+ax.text(77.75, 18.7, "77.1%", ha='center', fontsize=13.5 * SCALE, fontweight='bold', color='#F87171', zorder=8)
+ax.text(77.75, 16.6, "HIGH RISK (sub-033)", ha='center', fontsize=7.0 * SCALE, fontweight='bold', color='#FCA5A5', zorder=8)
 
-draw_box(84.0, 16.0, 11.0, 9.5, bg_color="#1E293B", edgecolor="#334155", lw=1.0, r=0.4)
-ax.text(89.5, 23.5, "AD Differential", ha='center', fontsize=8.0 * SCALE, fontweight='bold', color='#94A3B8', zorder=8)
-ax.text(89.5, 20.8, "AD: 85.3%", fontsize=8.0 * SCALE, fontweight='bold', color='#F87171', zorder=8)
-ax.text(89.5, 18.8, "FTD: 7.8%", fontsize=8.0 * SCALE, color='#C084FC', zorder=8)
-ax.text(89.5, 16.8, "CN:  6.9%", fontsize=8.0 * SCALE, color='#4ADE80', zorder=8)
+draw_box(84.0, 15.8, 11.0, 9.8, bg_color="#1E293B", edgecolor="#475569", lw=1.0, r=0.4)
+ax.text(89.5, 23.8, "AD Differential", ha='center', fontsize=8.0 * SCALE, fontweight='bold', color='#94A3B8', zorder=8)
+# Mini horizontal probability bars
+for idx_m, (lbl_m, val_m, col_m, y_m) in enumerate([("AD", 0.853, "#F87171", 21.3), ("FTD", 0.078, "#C084FC", 19.0), ("CN", 0.069, "#4ADE80", 16.7)]):
+    ax.text(84.6, y_m + 0.3, f"{lbl_m}", fontsize=7.2 * SCALE, fontweight='bold', color=col_m, zorder=9)
+    draw_box(87.0, y_m, 4.4, 1.1, bg_color="#0F172A", edgecolor="#334155", lw=0.6, r=0.15)
+    draw_box(87.0, y_m, max(0.35, 4.4 * val_m), 1.1, bg_color=col_m, edgecolor="none", lw=0.0, r=0.15)
+    ax.text(94.6, y_m + 0.3, f"{val_m*100:.1f}%", ha='right', fontsize=7.0 * SCALE, fontweight='bold', color="#E2E8F0", zorder=9)
 
 # Hardware Telemetry Chip Badge
 draw_box(71.5, 5.5, 24.5, 7.8, bg_color="#F8FAFC", edgecolor="black", lw=1.2, r=0.4)
