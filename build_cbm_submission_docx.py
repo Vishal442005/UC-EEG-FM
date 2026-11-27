@@ -11,7 +11,7 @@ from latex2mathml.converter import convert
 
 print("=== STARTING CBM SUBMISSION DOCX GENERATION ===")
 
-BASE_DIR = r"E:\All EEG"
+BASE_DIR = r"C:\Users\Visha\Desktop\NewAlcohol\UC_EEG_FM"
 LATEX_DIR = os.path.join(BASE_DIR, "latex_paper")
 FIG_DIR = os.path.join(LATEX_DIR, "figures")
 

@@ -14,7 +14,7 @@ for num, name in [
     (10, "Figure_10_Clinical_Benchmark_Generalization.png"),
     (11, "Figure_11_Pareto_Frontier_and_Edge_Latency.png")
 ]:
-    p = f"E:\\All EEG\\Figures\\{name}"
+    p = f"C:\\Users\\Visha\\Desktop\\NewAlcohol\\UC_EEG_FM\\Figures\\{name}"
     im = cv2.imread(p)
     if im is not None:
         h, w, c = im.shape

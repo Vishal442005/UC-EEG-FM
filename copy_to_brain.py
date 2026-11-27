@@ -1,7 +1,7 @@
 import os
 from PIL import Image
 
-fig_dir = r"E:\All EEG\Figures"
+fig_dir = r"C:\Users\Visha\Desktop\NewAlcohol\UC_EEG_FM\Figures"
 brain_dir = r"C:\Users\Visha\.gemini\antigravity\brain\a487a487-156f-4781-ba99-0b2ec1ba776a"
 
 for f in [

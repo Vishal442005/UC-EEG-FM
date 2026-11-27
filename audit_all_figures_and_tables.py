@@ -2,7 +2,7 @@ import docx
 import os
 import re
 
-doc_path = r"E:\All EEG\submission_docx\UC_EEG_FM_Manuscript.docx"
+doc_path = r"C:\Users\Visha\Desktop\NewAlcohol\UC_EEG_FM\submission_docx\UC_EEG_FM_Manuscript.docx"
 doc = docx.Document(doc_path)
 
 print(f"Auditing figures and tables in {doc_path}...")
