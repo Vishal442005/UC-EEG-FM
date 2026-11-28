@@ -48,8 +48,8 @@ def save_and_mirror(fig, base_name):
     pdf_name = f"{base_name}.pdf"
     p_png = os.path.join(FIG_DIR, png_name)
     p_pdf = os.path.join(FIG_DIR, pdf_name)
-    fig.savefig(p_png, dpi=300, bbox_inches='tight')
-    fig.savefig(p_pdf, format='pdf', bbox_inches='tight')
+    fig.savefig(p_png, dpi=300, bbox_inches='tight', pad_inches=0.22, facecolor='#FFFFFF')
+    fig.savefig(p_pdf, format='pdf', bbox_inches='tight', pad_inches=0.22, facecolor='#FFFFFF')
     for d in target_dirs:
         if d != FIG_DIR:
             shutil.copy2(p_png, os.path.join(d, png_name))
